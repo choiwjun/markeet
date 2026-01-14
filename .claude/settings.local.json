@@ -11,7 +11,13 @@
       "Bash(npm run typecheck:*)",
       "Bash(npm run test:*)",
       "Bash(npm install:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(node:*)",
+      "Bash(npm ls:*)",
+      "Bash(find:*)",
+      "Bash(Get-ChildItem -Path \"c:/Users/wj941/Downloads/markeet/.next/static/css\" -Recurse)",
+      "Bash(Select-Object Name, Length)",
+      "Bash(wc:*)"
     ]
   }
 }
