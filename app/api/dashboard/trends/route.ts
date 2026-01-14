@@ -6,6 +6,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
+// ad_data 쿼리 결과 타입
+interface AdDataRow {
+  date: string;
+  spend: number | null;
+  revenue: number | null;
+  roas: number | null;
+  clicks: number | null;
+  conversions: number | null;
+}
+
 // 일자별 데이터 타입
 interface DailyMetrics {
   date: string;
@@ -102,7 +112,7 @@ export async function GET(request: NextRequest) {
     }>();
 
     if (adData) {
-      for (const row of adData) {
+      for (const row of adData as AdDataRow[]) {
         const date = row.date;
 
         if (!dailyMap.has(date)) {

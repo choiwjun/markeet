@@ -7,7 +7,7 @@
  */
 
 import { createClient } from '@/lib/supabase/server';
-import type { PlatformCode, SyncJobStatus, SyncJob } from '@/types/database';
+import type { PlatformCode, SyncJobStatus, SyncJob, SyncJobInsert, SyncJobUpdate } from '@/types/database';
 
 // 동기화 결과 타입
 export interface SyncResult {
@@ -20,6 +20,13 @@ export interface SyncResult {
 // 동기화 상태 타입 (re-export for backward compatibility)
 export type SyncStatus = SyncJobStatus;
 
+// Supabase 쿼리 결과 타입
+interface SyncJobRow {
+  id: string;
+  status: string;
+  result: SyncResult | null;
+}
+
 /**
  * 동기화 작업 생성
  * PostgreSQL에 새 작업 레코드를 생성합니다.
@@ -30,14 +37,16 @@ async function createSyncJob(
 ): Promise<string> {
   const supabase = await createClient();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase.from('sync_jobs') as any)
-    .insert({
-      user_id: userId,
-      platform,
-      status: 'pending',
-      started_at: new Date().toISOString(),
-    })
+  const insertData: SyncJobInsert = {
+    user_id: userId,
+    platform,
+    status: 'pending',
+    started_at: new Date().toISOString(),
+  };
+
+  const { data, error } = await supabase
+    .from('sync_jobs')
+    .insert(insertData as never)
     .select('id')
     .single();
 
@@ -59,27 +68,22 @@ async function updateSyncJobStatus(
 ): Promise<void> {
   const supabase = await createClient();
 
-  const updateData: {
-    status: SyncJobStatus;
-    completed_at?: string;
-    result?: SyncResult;
-    error_message?: string;
-  } = { status };
+  const updateData: SyncJobUpdate = { status };
 
   if (status === 'completed' || status === 'failed') {
     updateData.completed_at = new Date().toISOString();
   }
 
   if (result) {
-    updateData.result = result;
+    updateData.result = result as unknown as typeof updateData.result;
     if (!result.success && result.error) {
       updateData.error_message = result.error;
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase.from('sync_jobs') as any)
-    .update(updateData)
+  const { error } = await supabase
+    .from('sync_jobs')
+    .update(updateData as never)
     .eq('id', jobId);
 
   if (error) {
@@ -166,16 +170,16 @@ async function collectPlatformData(
   // 프로덕션 환경에서의 실제 데이터 수집
   // TODO: 각 플랫폼별 API를 호출하여 데이터 수집 구현
   const platformHandlers: Record<PlatformCode, () => Promise<SyncResult>> = {
-    naver: () => collectNaverData(userId),
-    google: () => collectGoogleData(userId),
-    meta: () => collectMetaData(userId),
-    kakao: () => collectKakaoData(userId),
-    coupang: () => collectCoupangData(userId),
-    gmarket: () => collectGmarketData(userId),
-    eleventh: () => collectEleventhData(userId),
-    naver_store: () => collectNaverStoreData(userId),
-    ga4: () => collectGA4Data(userId),
-    naver_analytics: () => collectNaverAnalyticsData(userId),
+    naver: () => collectNaverData(),
+    google: () => collectGoogleData(),
+    meta: () => collectMetaData(),
+    kakao: () => collectKakaoData(),
+    coupang: () => collectCoupangData(),
+    gmarket: () => collectGmarketData(),
+    eleventh: () => collectEleventhData(),
+    naver_store: () => collectNaverStoreData(),
+    ga4: () => collectGA4Data(),
+    naver_analytics: () => collectNaverAnalyticsData(),
   };
 
   const handler = platformHandlers[platform];
@@ -198,8 +202,8 @@ export async function getSyncJobStatus(jobId: string): Promise<{
 } | null> {
   const supabase = await createClient();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase.from('sync_jobs') as any)
+  const { data, error } = await supabase
+    .from('sync_jobs')
     .select('status, result')
     .eq('id', jobId)
     .single();
@@ -208,7 +212,7 @@ export async function getSyncJobStatus(jobId: string): Promise<{
     return null;
   }
 
-  const jobData = data as { status: string; result: SyncResult | null };
+  const jobData = data as SyncJobRow;
 
   return {
     status: jobData.status as SyncJobStatus,
@@ -239,8 +243,8 @@ export async function getUserSyncJobs(
 ): Promise<SyncJob[]> {
   const supabase = await createClient();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (supabase.from('sync_jobs') as any)
+  const { data, error } = await supabase
+    .from('sync_jobs')
     .select('*')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
@@ -255,52 +259,42 @@ export async function getUserSyncJobs(
 }
 
 // 플랫폼별 데이터 수집 함수 스텁 (실제 구현은 Phase 2에서)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectNaverData(_userId: string): Promise<SyncResult> {
+async function collectNaverData(): Promise<SyncResult> {
   return { success: true, message: '네이버 광고 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectGoogleData(_userId: string): Promise<SyncResult> {
+async function collectGoogleData(): Promise<SyncResult> {
   return { success: true, message: 'Google Ads 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectMetaData(_userId: string): Promise<SyncResult> {
+async function collectMetaData(): Promise<SyncResult> {
   return { success: true, message: 'Meta 광고 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectKakaoData(_userId: string): Promise<SyncResult> {
+async function collectKakaoData(): Promise<SyncResult> {
   return { success: true, message: '카카오모먼트 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectCoupangData(_userId: string): Promise<SyncResult> {
+async function collectCoupangData(): Promise<SyncResult> {
   return { success: true, message: '쿠팡 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectGmarketData(_userId: string): Promise<SyncResult> {
+async function collectGmarketData(): Promise<SyncResult> {
   return { success: true, message: 'G마켓/옥션 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectEleventhData(_userId: string): Promise<SyncResult> {
+async function collectEleventhData(): Promise<SyncResult> {
   return { success: true, message: '11번가 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectNaverStoreData(_userId: string): Promise<SyncResult> {
+async function collectNaverStoreData(): Promise<SyncResult> {
   return { success: true, message: '네이버 스마트스토어 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectGA4Data(_userId: string): Promise<SyncResult> {
+async function collectGA4Data(): Promise<SyncResult> {
   return { success: true, message: 'GA4 데이터 수집 완료', recordCount: 0 };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function collectNaverAnalyticsData(_userId: string): Promise<SyncResult> {
+async function collectNaverAnalyticsData(): Promise<SyncResult> {
   return { success: true, message: '네이버 애널리틱스 데이터 수집 완료', recordCount: 0 };
 }

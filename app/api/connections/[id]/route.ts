@@ -137,15 +137,14 @@ export async function PATCH(
     const encryptedCredentials = await encryptCredentials(credentials);
 
     // 연동 정보 갱신
-    const updateData = {
+    const updateData: PlatformConnectionUpdate = {
       api_key_encrypted: encryptedCredentials,
-      status: 'active' as const,
+      status: 'active',
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error: updateError } = await (supabase
-      .from('platform_connections') as any)
-      .update(updateData)
+    const { data, error: updateError } = await supabase
+      .from('platform_connections')
+      .update(updateData as never)
       .eq('id', id)
       .select('id, platform, status, created_at, last_sync_at')
       .single();

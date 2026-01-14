@@ -7,6 +7,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import type { PlatformCode } from '@/types/database';
 
+// 플랫폼 연결 쿼리 결과 타입
+interface ConnectionRow {
+  id: string;
+  platform: string;
+}
+
+// ad_data 쿼리 결과 타입
+interface AdDataRow {
+  platform_connection_id: string;
+  spend: number | null;
+  revenue: number | null;
+  roas: number | null;
+  clicks: number | null;
+  conversions: number | null;
+}
+
 // 플랫폼별 데이터 타입
 interface PlatformMetrics {
   platform: PlatformCode;
@@ -100,7 +116,8 @@ export async function GET(request: NextRequest) {
     }
 
     // 연결 ID 목록
-    const connectionIds = connections.map((c) => c.id);
+    const typedConnections = connections as ConnectionRow[];
+    const connectionIds = typedConnections.map((c) => c.id);
 
     // 플랫폼별 광고 데이터 집계
     const { data: adData, error: adDataError } = await supabase
@@ -121,7 +138,7 @@ export async function GET(request: NextRequest) {
 
     // 플랫폼별 집계
     const platformMap = new Map<string, { connectionId: string; platform: PlatformCode }>();
-    connections.forEach((c) => {
+    typedConnections.forEach((c) => {
       platformMap.set(c.id, { connectionId: c.id, platform: c.platform as PlatformCode });
     });
 
@@ -135,7 +152,7 @@ export async function GET(request: NextRequest) {
     }>();
 
     if (adData) {
-      for (const row of adData) {
+      for (const row of adData as AdDataRow[]) {
         const connectionInfo = platformMap.get(row.platform_connection_id);
         if (!connectionInfo) continue;
 
@@ -168,7 +185,7 @@ export async function GET(request: NextRequest) {
     // 응답 데이터 구성
     const platformMetrics: PlatformMetrics[] = [];
 
-    for (const [platform, agg] of aggregatedData.entries()) {
+    for (const [platform, agg] of Array.from(aggregatedData.entries())) {
       let avgRoas = 0;
       if (agg.roasCount > 0) {
         avgRoas = agg.roasSum / agg.roasCount;

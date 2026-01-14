@@ -97,36 +97,6 @@ export function ApiKeyModal({
   const [stage, setStage] = useState<ConnectionStage>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // 필드 값 변경 핸들러
-  const handleChange = useCallback(
-    (fieldName: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setFormState(prev => ({
-        ...prev,
-        values: { ...prev.values, [fieldName]: value },
-        errors: prev.touched[fieldName]
-          ? { ...prev.errors, [fieldName]: validateField(fieldName, value) }
-          : prev.errors,
-      }));
-    },
-    []
-  );
-
-  // 필드 블러 핸들러
-  const handleBlur = useCallback(
-    (fieldName: string) => () => {
-      setFormState(prev => ({
-        ...prev,
-        touched: { ...prev.touched, [fieldName]: true },
-        errors: {
-          ...prev.errors,
-          [fieldName]: validateField(fieldName, prev.values[fieldName]),
-        },
-      }));
-    },
-    []
-  );
-
   // 개별 필드 유효성 검사 (TASK-406)
   const validateField = (fieldName: string, value: string): string => {
     const field = platform.apiKeyFields.find(f => f.name === fieldName);
@@ -160,6 +130,52 @@ export function ApiKeyModal({
 
     return Object.keys(newErrors).length === 0;
   };
+
+  // 필드 값 변경 핸들러
+  const handleChange = useCallback(
+    (fieldName: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setFormState(prev => {
+        const field = platform.apiKeyFields.find(f => f.name === fieldName);
+        let fieldError = '';
+        if (prev.touched[fieldName] && field) {
+          if (field.required && !value.trim()) {
+            fieldError = `${field.label}을(를) 입력해주세요.`;
+          }
+        }
+        return {
+          ...prev,
+          values: { ...prev.values, [fieldName]: value },
+          errors: prev.touched[fieldName]
+            ? { ...prev.errors, [fieldName]: fieldError }
+            : prev.errors,
+        };
+      });
+    },
+    [platform.apiKeyFields]
+  );
+
+  // 필드 블러 핸들러
+  const handleBlur = useCallback(
+    (fieldName: string) => () => {
+      setFormState(prev => {
+        const field = platform.apiKeyFields.find(f => f.name === fieldName);
+        let fieldError = '';
+        if (field && field.required && !prev.values[fieldName].trim()) {
+          fieldError = `${field.label}을(를) 입력해주세요.`;
+        }
+        return {
+          ...prev,
+          touched: { ...prev.touched, [fieldName]: true },
+          errors: {
+            ...prev.errors,
+            [fieldName]: fieldError,
+          },
+        };
+      });
+    },
+    [platform.apiKeyFields]
+  );
 
   // 안전한 JSON 파싱
   const safeJsonParse = async (response: Response): Promise<{ error?: string }> => {

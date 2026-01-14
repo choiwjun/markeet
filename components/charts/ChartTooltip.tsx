@@ -1,6 +1,5 @@
 'use client';
 
-import type { TooltipProps } from 'recharts';
 import { formatCurrency, formatNumber } from '@/lib/utils/format';
 
 // 툴팁 payload 타입
@@ -12,7 +11,14 @@ interface PayloadItem {
   payload: Record<string, unknown>;
 }
 
-interface ChartTooltipProps extends TooltipProps<number, string> {
+// ChartTooltip props - Recharts TooltipProps와 호환되는 독립적인 타입
+export interface ChartTooltipProps {
+  /** 툴팁 활성화 여부 */
+  active?: boolean;
+  /** 툴팁에 표시할 데이터 항목들 */
+  payload?: PayloadItem[];
+  /** 툴팁 라벨 (날짜 등) */
+  label?: string | number;
   /** 값 포맷팅 함수 */
   formatter?: (value: number, name: string) => string;
   /** 라벨 포맷팅 함수 */
@@ -96,18 +102,17 @@ export function ChartTooltip({
 
       {/* 데이터 항목들 */}
       <div className="space-y-1">
-        {payload.map((item, index) => {
-          const payloadItem = item as unknown as PayloadItem;
-          const formattedValue = formatter(payloadItem.value, payloadItem.name);
+        {payload.map((item: PayloadItem, index: number) => {
+          const formattedValue = formatter(item.value, item.name);
 
           return (
             <div key={index} className={TOOLTIP_ITEM_STYLES}>
               <span className={TOOLTIP_NAME_STYLES}>
                 <span
                   className={TOOLTIP_DOT_STYLES}
-                  style={{ backgroundColor: payloadItem.color }}
+                  style={{ backgroundColor: item.color }}
                 />
-                <span>{payloadItem.name}</span>
+                <span>{item.name}</span>
               </span>
               <span className={TOOLTIP_VALUE_STYLES}>{formattedValue}</span>
             </div>

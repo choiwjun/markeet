@@ -148,9 +148,12 @@ export interface SyncJob {
   created_at: string;
 }
 
-export type SyncJobInsert = Omit<SyncJob, 'id' | 'created_at'> & {
+export type SyncJobInsert = Omit<SyncJob, 'id' | 'created_at' | 'completed_at' | 'result' | 'error_message'> & {
   id?: string;
   created_at?: string;
+  completed_at?: string | null;
+  result?: Json | null;
+  error_message?: string | null;
 };
 
 export type SyncJobUpdate = Partial<Omit<SyncJob, 'id' | 'created_at' | 'user_id' | 'platform'>>;

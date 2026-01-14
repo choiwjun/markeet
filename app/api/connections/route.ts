@@ -224,19 +224,18 @@ export async function POST(request: NextRequest) {
     }
 
     // 연동 정보 저장
-    const insertData = {
+    const insertData: PlatformConnectionInsert = {
       user_id: user.id,
       platform,
       api_key_encrypted: encryptedCredentials,
       api_config: null,
-      status: 'active' as const,
+      status: 'active',
       last_sync_at: null,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error: insertError } = await (supabase
-      .from('platform_connections') as any)
-      .insert(insertData)
+    const { data, error: insertError } = await supabase
+      .from('platform_connections')
+      .insert(insertData as never)
       .select('id, platform, status, created_at, last_sync_at')
       .single();
 
@@ -377,15 +376,14 @@ export async function PUT(request: NextRequest) {
     }
 
     // 연동 정보 갱신
-    const updateData = {
+    const updateData: PlatformConnectionUpdate = {
       api_key_encrypted: encryptedCredentials,
-      status: 'active' as const,
+      status: 'active',
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error: updateError } = await (supabase
-      .from('platform_connections') as any)
-      .update(updateData)
+    const { data, error: updateError } = await supabase
+      .from('platform_connections')
+      .update(updateData as never)
       .eq('id', existingConnection.id)
       .select('id, platform, status, created_at, last_sync_at')
       .single();

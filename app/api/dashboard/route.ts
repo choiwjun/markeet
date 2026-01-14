@@ -6,6 +6,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
+// ad_data 쿼리 결과 타입
+interface AdDataRow {
+  spend: number | null;
+  revenue: number | null;
+  roas: number | null;
+  clicks: number | null;
+  conversions: number | null;
+  impressions?: number | null;
+}
+
 // 집계 데이터 타입
 interface DashboardMetrics {
   totalSpend: number;
@@ -144,7 +154,7 @@ export async function GET(request: NextRequest) {
       let roasSum = 0;
       let roasCount = 0;
 
-      for (const row of currentData) {
+      for (const row of currentData as AdDataRow[]) {
         currentMetrics.totalSpend += Number(row.spend) || 0;
         currentMetrics.totalRevenue += Number(row.revenue) || 0;
         currentMetrics.totalClicks += Number(row.clicks) || 0;
@@ -189,7 +199,7 @@ export async function GET(request: NextRequest) {
       let roasSum = 0;
       let roasCount = 0;
 
-      for (const row of previousData) {
+      for (const row of previousData as AdDataRow[]) {
         previousMetrics.totalSpend += Number(row.spend) || 0;
         previousMetrics.totalRevenue += Number(row.revenue) || 0;
         previousMetrics.totalClicks += Number(row.clicks) || 0;
