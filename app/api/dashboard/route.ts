@@ -55,17 +55,23 @@ function isValidDate(dateString: string): boolean {
 
 /**
  * 이전 기간 계산
+ * 현재 기간과 동일한 일수의 이전 기간을 계산합니다.
+ * 예: 2024-01-01 ~ 2024-01-07 (7일) → 이전 기간: 2023-12-25 ~ 2023-12-31 (7일)
  */
 function getPreviousPeriod(startDate: string, endDate: string): { prevStart: string; prevEnd: string } {
   const start = new Date(startDate);
   const end = new Date(endDate);
-  const periodDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
+  // 시작일과 종료일 포함하여 일수 계산 (+1)
+  const periodDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+  // 이전 기간 종료일: 현재 시작일 하루 전
   const prevEnd = new Date(start);
   prevEnd.setDate(prevEnd.getDate() - 1);
 
+  // 이전 기간 시작일: 이전 종료일에서 (periodDays - 1)일 전
   const prevStart = new Date(prevEnd);
-  prevStart.setDate(prevStart.getDate() - periodDays);
+  prevStart.setDate(prevStart.getDate() - (periodDays - 1));
 
   return {
     prevStart: prevStart.toISOString().split('T')[0],

@@ -2,8 +2,8 @@
 -- 데이터 동기화 작업 상태 추적용 (Redis 대신 PostgreSQL 사용)
 
 CREATE TABLE IF NOT EXISTS sync_jobs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   platform VARCHAR(50) NOT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'pending',
   started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

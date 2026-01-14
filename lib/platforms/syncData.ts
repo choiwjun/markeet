@@ -6,7 +6,7 @@
  * PostgreSQL(Supabase)을 사용하여 작업 상태를 추적합니다.
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import type { PlatformCode, SyncJobStatus, SyncJob, SyncJobInsert, SyncJobUpdate } from '@/types/database';
 
 // 동기화 결과 타입
@@ -35,7 +35,7 @@ async function createSyncJob(
   userId: string,
   platform: PlatformCode
 ): Promise<string> {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   const insertData: SyncJobInsert = {
     user_id: userId,
@@ -66,7 +66,7 @@ async function updateSyncJobStatus(
   status: SyncJobStatus,
   result?: SyncResult
 ): Promise<void> {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   const updateData: SyncJobUpdate = { status };
 
@@ -136,10 +136,15 @@ async function executeSyncJob(
     // 플랫폼별 데이터 수집 실행
     const result = await collectPlatformData(userId, platform);
 
-    // 상태 업데이트: 완료
-    await updateSyncJobStatus(jobId, 'completed', result);
-
-    console.log(`[SyncData] Job ${jobId} completed:`, result);
+    // 결과에 따라 상태 분기 처리
+    if (result.success) {
+      await updateSyncJobStatus(jobId, 'completed', result);
+      console.log(`[SyncData] Job ${jobId} completed:`, result);
+    } else {
+      // 실패한 경우 failed 상태로 저장
+      await updateSyncJobStatus(jobId, 'failed', result);
+      console.warn(`[SyncData] Job ${jobId} failed:`, result);
+    }
   } catch (error) {
     throw error;
   }
@@ -200,7 +205,7 @@ export async function getSyncJobStatus(jobId: string): Promise<{
   status: SyncJobStatus;
   result?: SyncResult;
 } | null> {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   const { data, error } = await supabase
     .from('sync_jobs')
@@ -241,7 +246,7 @@ export async function getUserSyncJobs(
   userId: string,
   limit: number = 10
 ): Promise<SyncJob[]> {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   const { data, error } = await supabase
     .from('sync_jobs')

@@ -29,6 +29,7 @@ const mockSupabaseClient = {
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(() => Promise.resolve(mockSupabaseClient)),
+  createAdminClient: vi.fn(() => Promise.resolve(mockSupabaseClient)),
 }));
 
 describe('syncData', () => {
