@@ -18,7 +18,7 @@ describe('CTASection', () => {
 
     it('설명이 렌더링되어야 함', () => {
       render(<CTASection />);
-      expect(screen.getByText(/1,000명 이상의 셀러들과 함께/)).toBeInTheDocument();
+      expect(screen.getByText(/지금 바로 시작하세요/)).toBeInTheDocument();
     });
   });
 

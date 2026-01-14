@@ -12,6 +12,16 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import {
+  ScrollAnimation,
+  StaggerContainer,
+  StaggerItem,
+  HoverLift,
+  ChatMessage,
+  AnimatedProgress,
+  fadeInUp,
+  fadeInLeft
+} from './animations';
 
 // 기능 데이터
 interface Feature {
@@ -70,7 +80,7 @@ interface FeaturesSectionProps {
 }
 
 /**
- * 랜딩페이지 기능 소개 섹션 - design.html 스타일 적용
+ * 랜딩페이지 기능 소개 섹션 - 애니메이션 적용
  */
 export function FeaturesSection({ className }: FeaturesSectionProps) {
   return (
@@ -81,19 +91,19 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* 섹션 헤더 */}
-        <div className="text-center mb-20 max-w-2xl mx-auto">
+        <ScrollAnimation variants={fadeInUp} className="text-center mb-20 max-w-2xl mx-auto">
           <h2 id="features-title" className="text-3xl font-extrabold text-text-main sm:text-4xl mb-6 tracking-tight">
             데이터 분석, 이제 대화하듯 쉽게
           </h2>
           <p className="text-lg text-text-sub font-medium leading-relaxed">
             복잡한 툴 사용법을 배울 필요 없습니다. 궁금한 점을 채팅창에 입력하기만 하세요.
           </p>
-        </div>
+        </ScrollAnimation>
 
         {/* AI 채팅 데모와 기능 카드 */}
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* AI 채팅 인터페이스 */}
-          <div className="lg:col-span-7 order-2 lg:order-1">
+          <ScrollAnimation variants={fadeInLeft} className="lg:col-span-7 order-2 lg:order-1">
             <div className="bg-white rounded-3xl shadow-deep border border-gray-100 overflow-hidden relative transform hover:-translate-y-1 transition-transform duration-500">
               {/* 채팅 헤더 */}
               <div className="bg-slate-50 border-b border-gray-100 p-5 flex items-center justify-between">
@@ -114,65 +124,77 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
               {/* 채팅 내용 */}
               <div className="p-8 bg-[#f8fafc] h-[580px] flex flex-col gap-8 overflow-y-auto">
                 {/* AI 메시지 */}
-                <div className="flex gap-5">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shrink-0 shadow-md">
-                    <Zap className="w-5 h-5 text-white" />
+                <ChatMessage delay={0.2}>
+                  <div className="flex gap-5">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shrink-0 shadow-md">
+                      <Zap className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="bg-white p-5 rounded-3xl rounded-tl-none shadow-sm border border-gray-100 text-sm font-medium text-gray-700 max-w-[90%] leading-relaxed">
+                      <p>대표님, 안녕하세요! 👋<br />어제(10월 24일) 스토어 데이터 분석이 완료되었습니다. 주요 지표를 요약해드릴까요?</p>
+                    </div>
                   </div>
-                  <div className="bg-white p-5 rounded-3xl rounded-tl-none shadow-sm border border-gray-100 text-sm font-medium text-gray-700 max-w-[90%] leading-relaxed">
-                    <p>대표님, 안녕하세요! 👋<br />어제(10월 24일) 스토어 데이터 분석이 완료되었습니다. 주요 지표를 요약해드릴까요?</p>
-                  </div>
-                </div>
+                </ChatMessage>
 
                 {/* 사용자 메시지 */}
-                <div className="flex gap-5 justify-end">
-                  <div className="bg-primary p-5 rounded-3xl rounded-tr-none shadow-md text-sm font-medium text-white max-w-[90%] leading-relaxed">
-                    응, 요약해주고 특히 <span className="font-bold underline decoration-blue-300 underline-offset-4">광고 효율(ROAS)</span>이 떨어진 상품이 있는지 알려줘.
+                <ChatMessage delay={0.6} isUser>
+                  <div className="flex gap-5 justify-end">
+                    <div className="bg-primary p-5 rounded-3xl rounded-tr-none shadow-md text-sm font-medium text-white max-w-[90%] leading-relaxed">
+                      응, 요약해주고 특히 <span className="font-bold underline decoration-blue-300 underline-offset-4">광고 효율(ROAS)</span>이 떨어진 상품이 있는지 알려줘.
+                    </div>
                   </div>
-                </div>
+                </ChatMessage>
 
                 {/* AI 분석 응답 */}
-                <div className="flex gap-5">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shrink-0 shadow-md">
-                    <Zap className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="space-y-4 max-w-[90%]">
-                    <div className="bg-white p-5 rounded-3xl rounded-tl-none shadow-sm border border-gray-100 text-sm font-medium text-gray-700 leading-relaxed">
-                      <p className="mb-2">확인했습니다. 어제 전체 ROAS는 320%로 전일 대비 <span className="text-red-500 font-bold bg-red-50 px-1 rounded">5% 하락</span>했습니다.</p>
-                      <p>주의가 필요한 상품 2가지를 발견했습니다:</p>
+                <ChatMessage delay={1.0}>
+                  <div className="flex gap-5">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shrink-0 shadow-md">
+                      <Zap className="w-5 h-5 text-white" />
                     </div>
+                    <div className="space-y-4 max-w-[90%]">
+                      <div className="bg-white p-5 rounded-3xl rounded-tl-none shadow-sm border border-gray-100 text-sm font-medium text-gray-700 leading-relaxed">
+                        <p className="mb-2">확인했습니다. 어제 전체 ROAS는 320%로 전일 대비 <span className="text-red-500 font-bold bg-red-50 px-1 rounded">5% 하락</span>했습니다.</p>
+                        <p>주의가 필요한 상품 2가지를 발견했습니다:</p>
+                      </div>
 
-                    {/* ROAS 하락 상품 카드 */}
-                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-                      <div className="text-xs font-bold text-gray-500 mb-4 flex items-center gap-1">
-                        <TrendingUp className="w-3.5 h-3.5 rotate-180" /> ROAS 하락 상품 (전일 대비)
-                      </div>
-                      <div className="space-y-5">
-                        <div>
-                          <div className="flex justify-between text-xs mb-2 font-medium">
-                            <span className="text-gray-800">데일리 린넨 셔츠</span>
-                            <span className="text-red-500 font-bold">180% (▼ 40%)</span>
+                      {/* ROAS 하락 상품 카드 */}
+                      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                        <div className="text-xs font-bold text-gray-500 mb-4 flex items-center gap-1">
+                          <TrendingUp className="w-3.5 h-3.5 rotate-180" /> ROAS 하락 상품 (전일 대비)
+                        </div>
+                        <div className="space-y-5">
+                          <div>
+                            <div className="flex justify-between text-xs mb-2 font-medium">
+                              <span className="text-gray-800">데일리 린넨 셔츠</span>
+                              <span className="text-red-500 font-bold">180% (▼ 40%)</span>
+                            </div>
+                            <AnimatedProgress
+                              value={45}
+                              delay={1.5}
+                              className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"
+                              barClassName="bg-red-400 h-full rounded-full"
+                            />
                           </div>
-                          <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                            <div className="bg-red-400 w-[45%] h-full rounded-full" />
+                          <div>
+                            <div className="flex justify-between text-xs mb-2 font-medium">
+                              <span className="text-gray-800">와이드 슬랙스 블랙</span>
+                              <span className="text-red-500 font-bold">210% (▼ 15%)</span>
+                            </div>
+                            <AnimatedProgress
+                              value={55}
+                              delay={1.8}
+                              className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden"
+                              barClassName="bg-red-400 h-full rounded-full"
+                            />
                           </div>
                         </div>
-                        <div>
-                          <div className="flex justify-between text-xs mb-2 font-medium">
-                            <span className="text-gray-800">와이드 슬랙스 블랙</span>
-                            <span className="text-red-500 font-bold">210% (▼ 15%)</span>
-                          </div>
-                          <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                            <div className="bg-red-400 w-[55%] h-full rounded-full" />
-                          </div>
-                        </div>
+                        <button className="w-full mt-6 py-3 bg-blue-50 text-primary text-xs font-bold rounded-xl hover:bg-blue-100 transition-colors flex items-center justify-center gap-1 group">
+                          상세 분석 리포트 보기
+                          <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        </button>
                       </div>
-                      <button className="w-full mt-6 py-3 bg-blue-50 text-primary text-xs font-bold rounded-xl hover:bg-blue-100 transition-colors flex items-center justify-center gap-1 group">
-                        상세 분석 리포트 보기
-                        <span className="group-hover:translate-x-1 transition-transform">→</span>
-                      </button>
                     </div>
                   </div>
-                </div>
+                </ChatMessage>
               </div>
 
               {/* 입력창 */}
@@ -193,58 +215,64 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </ScrollAnimation>
 
           {/* 기능 카드 */}
-          <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col justify-center h-full space-y-8">
+          <StaggerContainer className="lg:col-span-5 order-1 lg:order-2 flex flex-col justify-center h-full space-y-8" staggerDelay={0.15}>
             {FEATURES.slice(0, 3).map((feature) => {
               const IconComponent = feature.icon;
               return (
-                <div
-                  key={feature.title}
-                  className={`group p-8 rounded-3xl transition-all duration-300 cursor-default ${
-                    feature.highlight
-                      ? 'bg-white shadow-soft-lg border border-blue-100 ring-1 ring-primary/10'
-                      : 'bg-white shadow-sm hover:shadow-soft-lg border border-transparent hover:border-blue-50'
-                  }`}
-                >
-                  <div
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ${
-                      feature.highlight
-                        ? 'bg-gradient-to-br from-primary to-blue-600 text-white shadow-lg shadow-primary/30'
-                        : feature.icon === TrendingUp
-                          ? 'bg-green-50 text-green-600'
-                          : 'bg-blue-50 text-primary'
-                    }`}
-                  >
-                    <IconComponent className="w-7 h-7" aria-hidden="true" />
-                  </div>
-                  <h3 className="text-xl font-bold text-text-main mb-3">{feature.title}</h3>
-                  <p className="text-text-sub text-sm font-medium leading-relaxed">{feature.description}</p>
-                </div>
+                <StaggerItem key={feature.title}>
+                  <HoverLift>
+                    <div
+                      className={`group p-8 rounded-3xl transition-all duration-300 cursor-default ${
+                        feature.highlight
+                          ? 'bg-white shadow-soft-lg border border-blue-100 ring-1 ring-primary/10'
+                          : 'bg-white shadow-sm hover:shadow-soft-lg border border-transparent hover:border-blue-50'
+                      }`}
+                    >
+                      <div
+                        className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ${
+                          feature.highlight
+                            ? 'bg-gradient-to-br from-primary to-blue-600 text-white shadow-lg shadow-primary/30'
+                            : feature.icon === TrendingUp
+                              ? 'bg-green-50 text-green-600'
+                              : 'bg-blue-50 text-primary'
+                        }`}
+                      >
+                        <IconComponent className="w-7 h-7" aria-hidden="true" />
+                      </div>
+                      <h3 className="text-xl font-bold text-text-main mb-3">{feature.title}</h3>
+                      <p className="text-text-sub text-sm font-medium leading-relaxed">{feature.description}</p>
+                    </div>
+                  </HoverLift>
+                </StaggerItem>
               );
             })}
-          </div>
+          </StaggerContainer>
         </div>
 
         {/* 추가 기능 그리드 */}
-        <div className="mt-20 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <StaggerContainer className="mt-20 grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-4" staggerDelay={0.1}>
           {FEATURES.slice(3).map((feature) => {
             const IconComponent = feature.icon;
             return (
-              <article
-                key={feature.title}
-                className="group relative p-6 lg:p-8 bg-white rounded-2xl transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-1 border border-gray-100"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-primary mb-5 group-hover:scale-110 transition-transform duration-300">
-                  <IconComponent className="w-6 h-6" aria-hidden="true" />
-                </div>
-                <h3 className="text-lg font-semibold text-text-main mb-3">{feature.title}</h3>
-                <p className="text-sm text-text-sub leading-relaxed">{feature.description}</p>
-              </article>
+              <StaggerItem key={feature.title}>
+                <HoverLift>
+                  <article
+                    className="group relative p-6 lg:p-8 bg-white rounded-2xl transition-all duration-300 hover:shadow-soft-lg border border-gray-100"
+                  >
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-primary mb-5 group-hover:scale-110 transition-transform duration-300">
+                      <IconComponent className="w-6 h-6" aria-hidden="true" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-text-main mb-3">{feature.title}</h3>
+                    <p className="text-sm text-text-sub leading-relaxed">{feature.description}</p>
+                  </article>
+                </HoverLift>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );

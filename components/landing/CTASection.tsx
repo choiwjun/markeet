@@ -1,67 +1,119 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import {
+  ScrollAnimation,
+  HoverScale,
+  PulseGlow,
+  fadeInUp,
+  scaleIn
+} from './animations';
 
 interface CTASectionProps {
   className?: string;
 }
 
 /**
- * 랜딩페이지 CTA 섹션 - design.html 스타일 적용
+ * 랜딩페이지 CTA 섹션 - 애니메이션 적용
  */
 export function CTASection({ className }: CTASectionProps) {
   return (
     <section
-      className={`py-24 ${className || ''}`}
+      className={`relative py-24 overflow-hidden ${className || ''}`}
       aria-labelledby="cta-title"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-primary px-8 py-20 shadow-2xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
-          {/* 배경 그라데이션 */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-blue-700 to-indigo-900 z-0" />
+      {/* 배경 그라데이션 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-dark to-blue-900" />
 
-          {/* 배경 장식 */}
-          <svg
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2 -z-0 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0 opacity-40"
-            viewBox="0 0 1024 1024"
+      {/* 배경 장식 */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <svg className="absolute left-0 top-0 w-full h-full opacity-10" fill="none" preserveAspectRatio="none" viewBox="0 0 1440 600">
+          <defs>
+            <linearGradient id="cta-grad" x1="0%" x2="100%" y1="0%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <circle cx="200" cy="100" r="300" fill="url(#cta-grad)" />
+          <circle cx="1200" cy="500" r="400" fill="url(#cta-grad)" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+        {/* 아이콘 */}
+        <ScrollAnimation variants={scaleIn}>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm mb-8 border border-white/20">
+            <Sparkles className="w-8 h-8 text-white" aria-hidden="true" />
+          </div>
+        </ScrollAnimation>
+
+        {/* 타이틀 */}
+        <ScrollAnimation variants={fadeInUp} delay={0.1}>
+          <h2
+            id="cta-title"
+            className="text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl mb-6 tracking-tight"
           >
-            <circle cx="512" cy="512" fill="url(#cta-gradient)" fillOpacity="0.7" r="512" />
-            <defs>
-              <radialGradient id="cta-gradient">
-                <stop stopColor="#7775D6" />
-                <stop offset="1" stopColor="#E935C1" />
-              </radialGradient>
-            </defs>
-          </svg>
+            성장을 자동화할 준비가 되셨나요?
+          </h2>
+        </ScrollAnimation>
 
-          {/* 콘텐츠 */}
-          <div className="relative z-10 mx-auto max-w-md text-center lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
-            <h2 id="cta-title" className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl leading-snug">
-              성장을 자동화할 준비가 되셨나요?
-              <br />
-              지금 바로 무료로 시작해보세요.
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-blue-100 font-medium">
-              1,000명 이상의 셀러들과 함께 더 똑똑한 의사결정을 시작하세요. 마케트가 여러분의 성장을 돕겠습니다.
-            </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
-              <Link
-                href="/signup"
-                className="rounded-xl bg-white px-8 py-4 text-base font-bold text-primary shadow-lg hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all hover:scale-105"
-              >
-                지금 시작하기
-              </Link>
+        {/* 부제목 */}
+        <ScrollAnimation variants={fadeInUp} delay={0.2}>
+          <p className="text-lg text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
+            지금 바로 시작하세요. 복잡한 설정 없이 5분 만에 <br className="hidden sm:block" />
+            모든 플랫폼 데이터를 연동하고 AI 분석을 경험해보세요.
+          </p>
+        </ScrollAnimation>
+
+        {/* CTA 버튼 */}
+        <ScrollAnimation variants={fadeInUp} delay={0.3}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <PulseGlow>
+              <HoverScale scale={1.05}>
+                <Link
+                  href="/signup"
+                  className="h-14 px-10 rounded-xl bg-white text-primary text-base font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                >
+                  지금 시작하기
+                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                </Link>
+              </HoverScale>
+            </PulseGlow>
+            <HoverScale scale={1.03}>
               <Link
                 href="#features"
-                className="text-sm font-bold leading-6 text-white hover:text-blue-100 transition-colors flex items-center gap-1"
+                className="h-14 px-10 rounded-xl bg-white/10 backdrop-blur-sm border border-white/30 text-white text-base font-bold hover:bg-white/20 transition-all flex items-center justify-center"
               >
-                더 알아보기 <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                더 알아보기
               </Link>
+            </HoverScale>
+          </div>
+        </ScrollAnimation>
+
+        {/* 신뢰 지표 */}
+        <ScrollAnimation variants={fadeInUp} delay={0.4}>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-blue-200">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>무료 체험 가능</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>신용카드 불필요</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>언제든 취소 가능</span>
             </div>
           </div>
-        </div>
+        </ScrollAnimation>
       </div>
     </section>
   );
