@@ -232,97 +232,109 @@
 ## M2: 공통 UI 컴포넌트
 
 ### TASK-201: Button 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** Primary, Secondary, Ghost 변형을 가진 Button 컴포넌트
-- **검증:** 모든 변형 렌더링 테스트 통과
-- **파일:** `components/ui/Button.tsx`
-- **근거:** DesignSystem - Button 명세
+- **설명:** Primary, Secondary, Ghost, Danger 변형을 가진 Button 컴포넌트
+- **검증:** 모든 변형 렌더링 테스트 통과 (25개 테스트)✅
+- **파일:** `components/ui/Button.tsx`, `components/ui/Button.test.tsx`
+- **근거:** DesignSystem - Button 명세, design.html/dashboard.html 스타일 적용
+- **완료일:** 2026-01-14
 
 ### TASK-202: Button 상태 스타일 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** Hover, Active, Disabled, Loading 상태 스타일
-- **테스트:** `각 상태에서 올바른 스타일 적용`
+- **설명:** Hover, Active, Disabled, Loading 상태 스타일 (다크모드 지원)
+- **테스트:** `각 상태에서 올바른 스타일 적용` - 통과
 - **파일:** `components/ui/Button.tsx`
-- **근거:** DesignSystem - Button 상태별
+- **근거:** DesignSystem - Button 상태별, dashboard.html 스타일 적용✅
+- **완료일:** 2026-01-14
 
 ### TASK-203: Input 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 텍스트 입력 필드 컴포넌트 (라벨, 에러 메시지 포함)
-- **검증:** 기본 렌더링 테스트 통과
-- **파일:** `components/ui/Input.tsx`
-- **근거:** DesignSystem - Input Field 명세
+- **설명:** 텍스트 입력 필드 컴포넌트 (라벨, 에러 메시지, 아이콘 포함)
+- **검증:** 기본 렌더링 테스트 통과 (27개 테스트) ✅
+- **파일:** `components/ui/Input.tsx`, `components/ui/Input.test.tsx`
+- **근거:** DesignSystem - Input Field 명세, dashboard.html 스타일 적용
+- **완료일:** 2026-01-14
 
 ### TASK-204: Input 상태 스타일 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** Focus, Error, Disabled 상태 스타일
-- **테스트:** `에러 상태에서 에러 메시지 표시`
+- **설명:** Focus, Error, Disabled 상태 스타일 (다크모드 지원)
+- **테스트:** `에러 상태에서 에러 메시지 표시` - 통과 ✅
 - **파일:** `components/ui/Input.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-205: Card 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 콘텐츠를 감싸는 카드 컴포넌트
-- **검증:** 카드 렌더링 테스트 통과
-- **파일:** `components/ui/Card.tsx`
-- **근거:** DesignSystem - Card 명세
+- **설명:** 콘텐츠를 감싸는 카드 컴포넌트 (서브컴포넌트: Header, Body, Footer, Title, Description 포함)
+- **검증:** 카드 렌더링 테스트 통과 (29개 테스트) ✅
+- **파일:** `components/ui/Card.tsx`, `components/ui/Card.test.tsx`
+- **근거:** DesignSystem - Card 명세, dashboard.html 스타일 적용
+- **완료일:** 2026-01-14
 
 ### TASK-206: Modal 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 오버레이 모달 다이얼로그 컴포넌트
-- **검증:** 모달 열기/닫기 테스트 통과
-- **파일:** `components/ui/Modal.tsx`
+- **설명:** 오버레이 모달 다이얼로그 컴포넌트 (Portal 렌더링)
+- **검증:** 모달 열기/닫기 테스트 통과 (22개 테스트) ✅
+- **파일:** `components/ui/Modal.tsx`, `components/ui/Modal.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-207: Modal 접근성 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** ESC 키로 닫기, 포커스 트랩, aria 속성
-- **테스트:** `ESC 키 누르면 모달 닫힘`
+- **설명:** ESC 키로 닫기, 포커스 트랩, aria 속성, body 스크롤 방지
+- **테스트:** `ESC 키 누르면 모달 닫힘` - 통과 ✅
 - **파일:** `components/ui/Modal.tsx`
 - **근거:** DesignSystem - 접근성
+- **완료일:** 2026-01-14
 
 ### TASK-208: Badge 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** Success, Warning, Danger 변형을 가진 뱃지 컴포넌트
-- **검증:** 모든 변형 렌더링 테스트 통과
-- **파일:** `components/ui/Badge.tsx`
-- **근거:** DesignSystem - Badge 명세
+- **설명:** Success, Warning, Danger, Info, Primary 변형을 가진 뱃지 컴포넌트 (dot, removable 기능 포함)
+- **검증:** 모든 변형 렌더링 테스트 통과 (23개 테스트) ✅
+- **파일:** `components/ui/Badge.tsx`, `components/ui/Badge.test.tsx`
+- **근거:** DesignSystem - Badge 명세, dashboard.html 스타일 적용
+- **완료일:** 2026-01-14
 
 ### TASK-209: Toast 알림 시스템 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 성공/에러/경고 토스트 알림 (Zustand 연동)
-- **테스트:** `토스트 표시 후 자동 사라짐`
-- **파일:** `components/ui/Toast.tsx`, `lib/stores/toastStore.ts`
+- **설명:** 성공/에러/경고/정보 토스트 알림 (Zustand 연동, useToast 훅 포함)
+- **테스트:** `토스트 표시 후 자동 사라짐` - 통과 (18개 테스트) ✅
+- **파일:** `components/ui/Toast.tsx`, `components/ui/Toast.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-210: Skeleton 로딩 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 데이터 로딩 중 표시할 스켈레톤 UI
-- **검증:** 스켈레톤 렌더링 테스트 통과
-- **파일:** `components/ui/Skeleton.tsx`
-- **근거:** UserFlow - 데이터 로딩 상태
+- **설명:** 데이터 로딩 중 표시할 스켈레톤 UI (Text, Avatar, Card, TableRow, MetricCard 프리셋 포함)
+- **검증:** 스켈레톤 렌더링 테스트 통과 (32개 테스트) ✅
+- **파일:** `components/ui/Skeleton.tsx`, `components/ui/Skeleton.test.tsx`
+- **근거:** UserFlow - 데이터 로딩 상태, dashboard.html 스타일 적용
+- **완료일:** 2026-01-14
 
 ### TASK-211: EmptyState 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 데이터가 없을 때 표시할 빈 상태 UI
-- **검증:** EmptyState 렌더링 테스트 통과
-- **파일:** `components/ui/EmptyState.tsx`
-- **근거:** UserFlow - 데이터 없음 안내
+- **설명:** 데이터가 없을 때 표시할 빈 상태 UI (default, search, data, file, folder 변형)
+- **검증:** EmptyState 렌더링 테스트 통과 (18개 테스트) ✅
+- **파일:** `components/ui/EmptyState.tsx`, `components/ui/EmptyState.test.tsx`
+- **근거:** UserFlow - 데이터 없음 안내, dashboard.html 스타일 적용
+- **완료일:** 2026-01-14
 
 ### TASK-212: ErrorState 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 에러 발생 시 표시할 UI (재시도 버튼 포함)
-- **검증:** ErrorState 렌더링 테스트 통과
-- **파일:** `components/ui/ErrorState.tsx`
-- **근거:** UserFlow - 에러 처리 흐름
+- **설명:** 에러 발생 시 표시할 UI (재시도 버튼 포함, network/server/permission/notFound 변형)
+- **검증:** ErrorState 렌더링 테스트 통과 (22개 테스트) ✅
+- **파일:** `components/ui/ErrorState.tsx`, `components/ui/ErrorState.test.tsx`
+- **근거:** UserFlow - 에러 처리 흐름, dashboard.html 스타일 적용
+- **완료일:** 2026-01-14
 
 ---
 
