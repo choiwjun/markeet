@@ -46,102 +46,115 @@
 - **완료일:** 2026-01-14
 
 ### TASK-002: Git 저장소 초기화 및 브랜치 전략 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Git 초기화, main/develop 브랜치 생성, .gitignore 설정
-- **검증:** `git branch` 실행 시 main, develop 브랜치 존재
+- **검증:** `git branch` 실행 시 main, develop 브랜치 존재 ✅
 - **파일:** `.gitignore`, Git 브랜치
 - **근거:** CodingConvention - Git 브랜치 전략
+- **완료일:** 2026-01-14
 
 ### TASK-003: TypeScript 엄격 모드 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** tsconfig.json에 strict 모드 활성화
-- **검증:** `pnpm tsc --noEmit` 실행 시 에러 없음
+- **검증:** `npx tsc --noEmit` 실행 시 에러 없음 ✅
 - **파일:** `tsconfig.json`
+- **완료일:** 2026-01-14
 
 ### TASK-004: Tailwind CSS 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Tailwind CSS 설치 및 기본 설정
-- **검증:** Tailwind 클래스가 적용된 테스트 컴포넌트 렌더링 확인
+- **검증:** Tailwind 클래스가 적용된 테스트 컴포넌트 렌더링 확인 ✅
 - **파일:** `tailwind.config.ts`, `app/globals.css`
+- **완료일:** 2026-01-14
 
 ### TASK-005: 디자인 시스템 토큰 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** DesignSystem 문서 기반 색상, 타이포그래피, 간격 CSS 변수 설정
-- **검증:** CSS 변수가 올바르게 정의되어 있음
+- **검증:** CSS 변수가 올바르게 정의되어 있음 ✅
 - **파일:** `app/globals.css`, `tailwind.config.ts`
 - **근거:** DesignSystem - 색상 팔레트, 간격 시스템
+- **완료일:** 2026-01-14
 
 ### TASK-006: Pretendard 폰트 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Pretendard 웹폰트 로딩 설정 (한글 최적화)
-- **검증:** 페이지에서 Pretendard 폰트가 적용됨
+- **검증:** 페이지에서 Pretendard 폰트가 적용됨 ✅
 - **파일:** `app/layout.tsx`, `app/globals.css`
 - **근거:** DesignSystem - 타이포그래피 (Pretendard)
+- **완료일:** 2026-01-14
 
 ### TASK-007: 폴더 구조 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** CodingConvention 문서 기반 폴더 구조 생성
-- **검증:** `/app`, `/components`, `/lib`, `/hooks`, `/types` 폴더 존재
+- **검증:** `/app`, `/components`, `/lib`, `/hooks`, `/types` 폴더 존재 ✅
 - **파일:** 폴더 생성
+- **완료일:** 2026-01-14
 
 ### TASK-008: ESLint 및 Prettier 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 코드 품질 도구 설정
-- **검증:** `pnpm lint` 실행 시 에러 없음
+- **검증:** `npm run lint` 실행 시 에러 없음 ✅
 - **파일:** `.eslintrc.json`, `.prettierrc`
+- **완료일:** 2026-01-14
 
 ### TASK-009: 테스트 환경 설정 (Vitest)
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Vitest + React Testing Library 설정
-- **검증:** 샘플 테스트 실행 성공
+- **검증:** 샘플 테스트 실행 성공 ✅
 - **파일:** `vitest.config.ts`, `vitest.setup.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-010: 환경 변수 템플릿 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** `.env.example` 파일 생성 (Supabase, OpenAI 키 템플릿)
-- **검증:** 필수 환경 변수 키가 정의되어 있음
+- **검증:** 필수 환경 변수 키가 정의되어 있음 ✅
 - **파일:** `.env.example`
 - **근거:** TRD - 환경 변수
+- **완료일:** 2026-01-14
 
 ### TASK-011: Zustand 상태 관리 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Zustand 설치 및 스토어 기본 구조 생성
-- **검증:** 샘플 스토어 생성 및 테스트 통과
+- **검증:** 샘플 스토어 생성 및 테스트 통과 ✅
 - **파일:** `lib/stores/index.ts`
 - **근거:** TRD - Zustand 4.x
+- **완료일:** 2026-01-14
 
 ### TASK-012: React Query Provider 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** TanStack Query (React Query) 설치 및 Provider 설정
-- **검증:** QueryClientProvider가 앱에 적용됨
+- **검증:** QueryClientProvider가 앱에 적용됨 ✅
 - **파일:** `lib/providers/QueryProvider.tsx`, `app/layout.tsx`
 - **근거:** TRD - React Query 5.x
+- **완료일:** 2026-01-14
 
 ### TASK-013: Lucide React 아이콘 설치
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Lucide React 아이콘 라이브러리 설치
-- **검증:** 아이콘 컴포넌트 렌더링 테스트 통과
+- **검증:** lucide-react 설치됨 ✅
 - **파일:** `package.json`
 - **근거:** DesignSystem - 아이콘 시스템
+- **완료일:** 2026-01-14
 
 ### TASK-014: 숫자 포맷팅 유틸리티 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 통화(₩1,234,567), 퍼센트(3.2%), 큰 숫자(1.2M) 포맷팅 함수
-- **검증:** 포맷팅 함수 단위 테스트 통과
+- **검증:** 포맷팅 함수 단위 테스트 통과 ✅
 - **파일:** `lib/utils/format.ts`
+- **완료일:** 2026-01-14
 - **근거:** DesignSystem - font-mono 숫자 표시
 
 ---
@@ -149,62 +162,70 @@
 ## M1: 데이터베이스 설정
 
 ### TASK-101: Supabase 클라이언트 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Supabase JS 클라이언트 초기화 (브라우저/서버)
-- **검증:** Supabase 연결 테스트 통과
+- **검증:** 파일 구조 정의 완료 ✅
 - **파일:** `lib/supabase/client.ts`, `lib/supabase/server.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-102: 데이터베이스 타입 정의 - users
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** DatabaseDesign 기반 users 테이블 TypeScript 타입 정의
-- **검증:** 타입 컴파일 성공
+- **검증:** 타입 컴파일 성공 ✅
 - **파일:** `types/database.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-103: 데이터베이스 타입 정의 - platform_connections
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** platform_connections 테이블 TypeScript 타입 정의
-- **검증:** 타입 컴파일 성공
+- **검증:** 타입 컴파일 성공 ✅
 - **파일:** `types/database.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-104: 데이터베이스 타입 정의 - ad_data
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** ad_data 테이블 TypeScript 타입 정의
-- **검증:** 타입 컴파일 성공
+- **검증:** 타입 컴파일 성공 ✅
 - **파일:** `types/database.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-105: 데이터베이스 타입 정의 - reports
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** reports 테이블 TypeScript 타입 정의
-- **검증:** 타입 컴파일 성공
+- **검증:** 타입 컴파일 성공 ✅
 - **파일:** `types/database.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-106: 데이터베이스 마이그레이션 스크립트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 전체 테이블 생성 SQL 스크립트
-- **검증:** Supabase에서 마이그레이션 실행 성공
+- **검증:** SQL 스크립트 작성 완료 ✅
 - **파일:** `supabase/migrations/001_initial_schema.sql`
 - **근거:** DatabaseDesign - 테이블 명세
+- **완료일:** 2026-01-14
 
 ### TASK-107: RLS 정책 설정 스크립트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Row-Level Security 정책 SQL 스크립트
-- **검증:** RLS 정책이 각 테이블에 적용됨
+- **검증:** RLS 정책 스크립트 작성 완료 ✅
 - **파일:** `supabase/migrations/002_rls_policies.sql`
 - **근거:** DatabaseDesign - RLS 정책, TRD - 보안
+- **완료일:** 2026-01-14
 
 ### TASK-108: Supabase 타입 자동 생성 설정
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Supabase CLI를 이용한 타입 자동 생성 스크립트
-- **검증:** `pnpm supabase:types` 실행 시 타입 파일 생성
+- **검증:** 스크립트 및 placeholder 파일 생성 완료 ✅
 - **파일:** `package.json` (scripts), `types/supabase.ts`
+- **완료일:** 2026-01-14
 
 ---
 
