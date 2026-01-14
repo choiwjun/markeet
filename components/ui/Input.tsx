@@ -138,7 +138,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {rightIcon && (
             <span
               className={`absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 ${ICON_SIZE[size]}`}
-              aria-hidden="true"
             >
               {rightIcon}
             </span>

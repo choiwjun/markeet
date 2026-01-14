@@ -341,106 +341,121 @@
 ## M3: 인증 시스템
 
 ### TASK-301: 인증 레이아웃 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 인증 페이지용 공통 레이아웃 (중앙 정렬 카드)
-- **검증:** 레이아웃 컴포넌트 렌더링 테스트 통과
-- **파일:** `app/(auth)/layout.tsx`
+- **검증:** 레이아웃 컴포넌트 렌더링 테스트 통과 (9개 테스트) ✅
+- **파일:** `app/(auth)/layout.tsx`, `app/(auth)/layout.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-302: 회원가입 폼 UI 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 이메일/비밀번호 입력 폼 UI (기능 없이 UI만)
-- **검증:** 폼 렌더링 테스트 통과
-- **파일:** `components/auth/SignUpForm.tsx`
+- **설명:** 이메일/비밀번호 입력 폼 UI (이름, 비밀번호 확인, 비밀번호 요구사항 인디케이터 포함)
+- **검증:** 폼 렌더링 테스트 통과 (27개 테스트) ✅
+- **파일:** `components/auth/SignUpForm.tsx`, `components/auth/SignUpForm.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-303: 회원가입 폼 유효성 검사 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 이메일 형식, 비밀번호 길이(8자 이상) 검증
+- **설명:** 이메일 형식, 비밀번호 길이(8자 이상), 비밀번호 확인 일치 검증
 - **테스트:**
-  - `유효하지 않은 이메일 형식이면 에러 메시지 표시`
-  - `비밀번호가 8자 미만이면 에러 메시지 표시`
+  - `유효하지 않은 이메일 형식이면 에러 메시지 표시` ✅
+  - `비밀번호가 8자 미만이면 에러 메시지 표시` ✅
+  - `비밀번호가 일치하지 않으면 에러 메시지 표시` ✅
 - **파일:** `components/auth/SignUpForm.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-304: 회원가입 API 연동 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** Supabase Auth signUp 호출
-- **테스트:** `유효한 정보로 회원가입 시 성공 응답 반환`
-- **파일:** `components/auth/SignUpForm.tsx`, `lib/supabase/auth.ts`
+- **설명:** Supabase Auth signUp 호출 및 에러 메시지 한글화
+- **테스트:** `유효한 정보로 회원가입 시 성공 응답 반환` ✅
+- **파일:** `lib/supabase/auth.ts`, `lib/supabase/auth.test.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-305: 회원가입 페이지 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 회원가입 페이지 라우트 생성
-- **검증:** `/signup` 경로 접근 시 회원가입 폼 표시
-- **파일:** `app/(auth)/signup/page.tsx`
+- **설명:** 회원가입 페이지 라우트 생성 (이메일 인증 필요 시 verify-email 페이지로 리다이렉트)
+- **검증:** `/signup` 경로 접근 시 회원가입 폼 표시 ✅
+- **파일:** `app/(auth)/signup/page.tsx`, `app/(auth)/signup/page.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-306: 로그인 폼 UI 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 이메일/비밀번호 로그인 폼 UI
-- **검증:** 폼 렌더링 테스트 통과
-- **파일:** `components/auth/LoginForm.tsx`
+- **설명:** 이메일/비밀번호 로그인 폼 UI (비밀번호 찾기 링크 포함)
+- **검증:** 폼 렌더링 테스트 통과 (21개 테스트) ✅
+- **파일:** `components/auth/LoginForm.tsx`, `components/auth/LoginForm.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-307: 로그인 폼 유효성 검사 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 이메일/비밀번호 필수 입력 검증
-- **테스트:** `빈 필드 제출 시 에러 메시지 표시`
+- **테스트:** `빈 필드 제출 시 에러 메시지 표시` ✅
 - **파일:** `components/auth/LoginForm.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-308: 로그인 API 연동 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** Supabase Auth signInWithPassword 호출
-- **테스트:** `유효한 자격증명으로 로그인 시 세션 생성`
-- **파일:** `components/auth/LoginForm.tsx`, `lib/supabase/auth.ts`
+- **테스트:** `유효한 자격증명으로 로그인 시 세션 생성` ✅
+- **파일:** `lib/supabase/auth.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-309: 로그인 페이지 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 로그인 페이지 라우트 생성
-- **검증:** `/login` 경로 접근 시 로그인 폼 표시
-- **파일:** `app/(auth)/login/page.tsx`
+- **검증:** `/login` 경로 접근 시 로그인 폼 표시 ✅
+- **파일:** `app/(auth)/login/page.tsx`, `app/(auth)/login/page.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-310: 로그아웃 기능 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** Supabase Auth signOut 호출 및 리다이렉트
-- **테스트:** `로그아웃 시 세션 제거 및 로그인 페이지로 이동`
+- **테스트:** `로그아웃 시 세션 제거 및 로그인 페이지로 이동` ✅
 - **파일:** `lib/supabase/auth.ts`
 - **근거:** UserFlow - 인증 상태 관리
+- **완료일:** 2026-01-14
 
 ### TASK-311: 인증 상태 관리 훅 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 현재 사용자 세션 상태 관리 커스텀 훅
-- **테스트:** `로그인 상태에서 사용자 정보 반환`
-- **파일:** `hooks/useAuth.ts`
+- **설명:** 현재 사용자 세션 상태 관리 커스텀 훅 (useAuth, useRequireAuth)
+- **테스트:** `로그인 상태에서 사용자 정보 반환` ✅
+- **파일:** `hooks/useAuth.ts`, `hooks/useAuth.test.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-312: 인증 미들웨어 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 보호된 라우트 접근 제어
-- **테스트:** `미인증 사용자가 대시보드 접근 시 로그인 페이지로 리다이렉트`
+- **설명:** 보호된 라우트 접근 제어 (비인증 사용자 리다이렉트, 인증 사용자 auth 페이지 차단)
+- **테스트:** `미인증 사용자가 대시보드 접근 시 로그인 페이지로 리다이렉트` ✅
 - **파일:** `middleware.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-313: 온보딩 완료 상태 체크 로직 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 사용자의 온보딩 완료 여부 확인 (플랫폼 연동 1개 이상)
-- **테스트:** `연동된 플랫폼 없으면 온보딩 페이지로 리다이렉트`
-- **파일:** `lib/auth/onboardingCheck.ts`, `middleware.ts`
+- **테스트:** `연동된 플랫폼 없으면 온보딩 페이지로 리다이렉트` ✅
+- **파일:** `lib/auth/onboardingCheck.ts`, `lib/auth/onboardingCheck.test.ts`, `middleware.ts`
 - **근거:** UserFlow - 인증 상태 (온보딩 필요 여부)
+- **완료일:** 2026-01-14
 
 ### TASK-314: 인증 에러 처리 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 로그인/회원가입 실패 시 에러 메시지 표시
-- **테스트:** `잘못된 비밀번호로 로그인 시 에러 메시지 표시`
-- **파일:** `components/auth/LoginForm.tsx`, `components/auth/SignUpForm.tsx`
+- **설명:** 로그인/회원가입 실패 시 에러 메시지 표시 (한글화된 에러 메시지)
+- **테스트:** `잘못된 비밀번호로 로그인 시 에러 메시지 표시` ✅
+- **파일:** `components/auth/LoginForm.tsx`, `components/auth/SignUpForm.tsx`, `lib/supabase/auth.ts`
+- **완료일:** 2026-01-14
 
 ---
 
