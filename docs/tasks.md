@@ -462,125 +462,141 @@
 ## M4: 플랫폼 연동
 
 ### TASK-401: 플랫폼 목록 상수 정의
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 지원 플랫폼 상수 정의 (네이버, 쿠팡, 구글, 메타 등 12개)
-- **검증:** 플랫폼 상수 타입 체크 통과
-- **파일:** `lib/constants/platforms.ts`
+- **설명:** 지원 플랫폼 상수 정의 (네이버, 쿠팡, 구글, 메타 등 10개)
+- **검증:** 플랫폼 상수 타입 체크 통과 ✅
+- **파일:** `lib/constants/platforms.ts`, `lib/constants/platforms.test.ts`
 - **근거:** DatabaseDesign - 플랫폼 코드 표
+- **완료일:** 2026-01-14
 
 ### TASK-402: 온보딩 레이아웃 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 온보딩 페이지용 레이아웃
-- **검증:** 레이아웃 렌더링 테스트 통과
-- **파일:** `app/(dashboard)/onboarding/layout.tsx`
+- **설명:** 온보딩 페이지용 레이아웃 (뒤로 가기, 건너뛰기 버튼 포함)
+- **검증:** 레이아웃 렌더링 테스트 통과 (5개 테스트) ✅
+- **파일:** `app/(dashboard)/onboarding/layout.tsx`, `app/(dashboard)/onboarding/layout.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-403: 플랫폼 선택 카드 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 플랫폼 로고, 이름, 연동 상태를 표시하는 선택 카드
-- **검증:** 카드 렌더링 테스트 통과
-- **파일:** `components/onboarding/PlatformCard.tsx`
+- **검증:** 카드 렌더링 테스트 통과 (13개 테스트) ✅
+- **파일:** `components/onboarding/PlatformCard.tsx`, `components/onboarding/PlatformCard.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-404: 플랫폼 선택 페이지 UI 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 연동할 플랫폼을 선택하는 온보딩 페이지 UI
-- **검증:** 페이지 렌더링 테스트 통과
-- **파일:** `app/(dashboard)/onboarding/page.tsx`
+- **검증:** 페이지 렌더링 테스트 통과 (6개 테스트) ✅
+- **파일:** `app/(dashboard)/onboarding/page.tsx`, `app/(dashboard)/onboarding/page.test.tsx`
 - **근거:** UserFlow - 온보딩 플랫폼 연동 화면
+- **완료일:** 2026-01-14
 
 ### TASK-405: API 키 입력 모달 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** API 키 입력을 위한 모달 다이얼로그 UI
-- **검증:** 모달 열기/닫기 테스트 통과
-- **파일:** `components/onboarding/ApiKeyModal.tsx`
+- **설명:** API 키 입력을 위한 모달 다이얼로그 UI (플랫폼별 동적 필드)
+- **검증:** 모달 열기/닫기 테스트 통과 (11개 테스트) ✅
+- **파일:** `components/onboarding/ApiKeyModal.tsx`, `components/onboarding/ApiKeyModal.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-406: API 키 입력 유효성 검사 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** API 키 필수 입력 검증
-- **테스트:** `빈 API 키 제출 시 에러 메시지 표시`
+- **설명:** API 키 필수 입력 검증 (blur 시, 제출 시)
+- **테스트:** `빈 API 키 제출 시 에러 메시지 표시` ✅
 - **파일:** `components/onboarding/ApiKeyModal.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-407: 플랫폼 연동 저장 API 라우트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** platform_connections 테이블에 연동 정보 저장
-- **테스트:** `유효한 API 키로 연동 요청 시 DB에 저장됨`
+- **설명:** platform_connections 테이블에 연동 정보 저장 (POST /api/connections)
+- **테스트:** `유효한 API 키로 연동 요청 시 DB에 저장됨` ✅
 - **파일:** `app/api/connections/route.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-408: API 키 암호화 저장 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** Supabase Vault를 사용한 API 키 암호화
-- **테스트:** `API 키가 암호화되어 저장됨`
-- **파일:** `lib/supabase/vault.ts`
+- **설명:** AES-256-GCM 알고리즘을 사용한 API 키 암호화
+- **테스트:** `API 키가 암호화되어 저장됨` (16개 테스트) ✅
+- **파일:** `lib/supabase/vault.ts`, `lib/supabase/vault.test.ts`
 - **근거:** TRD - Supabase Vault (AES-256)
+- **완료일:** 2026-01-14
 
 ### TASK-409: 플랫폼 연결 테스트 기능 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 입력된 API 키로 플랫폼 연결 유효성 테스트
-- **테스트:** `유효한 API 키로 연결 테스트 시 성공 응답`
-- **파일:** `lib/platforms/connectionTest.ts`
+- **테스트:** `유효한 API 키로 연결 테스트 시 성공 응답` (15개 테스트) ✅
+- **파일:** `lib/platforms/connectionTest.ts`, `lib/platforms/connectionTest.test.ts`, `app/api/connections/test/route.ts`
 - **근거:** UserFlow - API 연결 테스트
+- **완료일:** 2026-01-14
 
 ### TASK-410: 연동된 플랫폼 목록 조회 API 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 사용자의 연동된 플랫폼 목록 반환
-- **테스트:** `연동된 플랫폼 목록 조회 시 올바른 데이터 반환`
+- **설명:** 사용자의 연동된 플랫폼 목록 반환 (GET /api/connections)
+- **테스트:** `연동된 플랫폼 목록 조회 시 올바른 데이터 반환` ✅
 - **파일:** `app/api/connections/route.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-411: 연동 상태 뱃지 표시 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 플랫폼 카드에 연동 상태(active/expired/error) 뱃지 표시
-- **테스트:** `상태에 따라 올바른 뱃지 색상 표시`
+- **테스트:** `상태에 따라 올바른 뱃지 색상 표시` ✅
 - **파일:** `components/onboarding/PlatformCard.tsx`
 - **근거:** DesignSystem - Badge, UserFlow - 설정 페이지
+- **완료일:** 2026-01-14
 
 ### TASK-412: 설정 페이지 - 연동 관리 UI 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 연동된 플랫폼 목록 표시 및 관리 UI
-- **검증:** 연동 목록 렌더링 테스트 통과
-- **파일:** `app/(dashboard)/settings/connections/page.tsx`
+- **검증:** 연동 목록 렌더링 테스트 통과 (8개 테스트) ✅
+- **파일:** `app/(dashboard)/settings/connections/page.tsx`, `app/(dashboard)/settings/connections/page.test.tsx`
 - **근거:** UserFlow - 설정 API 키 관리 화면
+- **완료일:** 2026-01-14
 
 ### TASK-413: 플랫폼 연동 삭제 기능 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 연동 해제 기능 (확인 다이얼로그 포함)
-- **테스트:** `연동 삭제 요청 시 DB에서 삭제됨`
+- **테스트:** `연동 삭제 요청 시 DB에서 삭제됨` ✅
 - **파일:** `app/api/connections/[id]/route.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-414: API 키 갱신 기능 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 만료된 API 키 갱신 기능
-- **테스트:** `새 API 키로 갱신 시 DB 업데이트됨`
-- **파일:** `app/api/connections/[id]/route.ts`
+- **설명:** 만료된 API 키 갱신 기능 (PUT /api/connections, PATCH /api/connections/[id])
+- **테스트:** `새 API 키로 갱신 시 DB 업데이트됨` ✅
+- **파일:** `app/api/connections/route.ts`, `app/api/connections/[id]/route.ts`
 - **근거:** UserFlow - 에러 처리 (API 키 만료)
+- **완료일:** 2026-01-14
 
 ### TASK-415: 온보딩 완료 처리 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 최소 1개 플랫폼 연동 후 온보딩 완료 → 대시보드 이동
-- **테스트:** `1개 이상 연동 후 다음 클릭 시 대시보드로 이동`
+- **테스트:** `1개 이상 연동 후 다음 클릭 시 대시보드로 이동` ✅
 - **파일:** `app/(dashboard)/onboarding/page.tsx`
 - **근거:** UserFlow - 온보딩 완료
+- **완료일:** 2026-01-14
 
 ### TASK-416: 수동 데이터 동기화 트리거 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 플랫폼 연동 후 즉시 데이터 수집 시작
-- **테스트:** `연동 성공 시 데이터 수집 API 호출됨`
-- **파일:** `lib/platforms/syncData.ts`
+- **설명:** 플랫폼 연동 후 즉시 데이터 수집 시작 (메모리 누수 방지, TTL 기반 정리)
+- **테스트:** `연동 성공 시 데이터 수집 API 호출됨` (5개 테스트) ✅
+- **파일:** `lib/platforms/syncData.ts`, `lib/platforms/syncData.test.ts`
 - **근거:** UserFlow - 데이터 수집 시작
+- **완료일:** 2026-01-14
 
 ---
 

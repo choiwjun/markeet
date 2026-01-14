@@ -133,6 +133,28 @@ export type ChatHistoryInsert = Omit<ChatHistory, 'id' | 'created_at'> & {
 
 export type ChatHistoryUpdate = Partial<Omit<ChatHistory, 'id' | 'created_at'>>;
 
+// Sync Jobs 테이블 타입 (동기화 작업 추적)
+export type SyncJobStatus = 'pending' | 'running' | 'completed' | 'failed';
+
+export interface SyncJob {
+  id: string;
+  user_id: string;
+  platform: PlatformCode;
+  status: SyncJobStatus;
+  started_at: string;
+  completed_at: string | null;
+  result: Json | null;
+  error_message: string | null;
+  created_at: string;
+}
+
+export type SyncJobInsert = Omit<SyncJob, 'id' | 'created_at'> & {
+  id?: string;
+  created_at?: string;
+};
+
+export type SyncJobUpdate = Partial<Omit<SyncJob, 'id' | 'created_at' | 'user_id' | 'platform'>>;
+
 // Supabase Database 타입 (supabase-js와 호환)
 export interface Database {
   public: {
@@ -162,13 +184,24 @@ export interface Database {
         Insert: ChatHistoryInsert;
         Update: ChatHistoryUpdate;
       };
+      sync_jobs: {
+        Row: SyncJob;
+        Insert: SyncJobInsert;
+        Update: SyncJobUpdate;
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      cleanup_old_sync_jobs: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
+    };
     Enums: {
       subscription_plan: SubscriptionPlan;
       platform_status: PlatformStatus;
       report_type: ReportType;
+      sync_job_status: SyncJobStatus;
     };
   };
 }
