@@ -1,134 +1,65 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-
-// 스타일 상수
-const SECTION_STYLES = [
-  'py-20 lg:py-28',
-  'bg-gradient-to-br from-primary-600 to-primary-700',
-  'dark:from-primary-700 dark:to-primary-800',
-].join(' ');
-
-const CONTAINER_STYLES = [
-  'max-w-7xl mx-auto',
-  'px-4 sm:px-6 lg:px-8',
-].join(' ');
-
-const CONTENT_WRAPPER_STYLES = [
-  'max-w-3xl mx-auto',
-  'text-center',
-].join(' ');
-
-const TITLE_STYLES = [
-  'text-3xl sm:text-4xl lg:text-5xl',
-  'font-bold',
-  'text-white',
-  'mb-6',
-].join(' ');
-
-const DESCRIPTION_STYLES = [
-  'text-lg',
-  'text-primary-100',
-  'mb-10',
-  'leading-relaxed',
-].join(' ');
-
-const BENEFITS_LIST_STYLES = [
-  'flex flex-col sm:flex-row',
-  'items-center justify-center',
-  'gap-4 sm:gap-8',
-  'mb-10',
-].join(' ');
-
-const BENEFIT_ITEM_STYLES = [
-  'flex items-center gap-2',
-  'text-white',
-  'text-sm sm:text-base',
-].join(' ');
-
-const CTA_WRAPPER_STYLES = [
-  'flex flex-col sm:flex-row',
-  'items-center justify-center',
-  'gap-4',
-].join(' ');
-
-const PRIMARY_CTA_STYLES = [
-  'bg-white',
-  'text-primary-600',
-  'hover:bg-primary-50',
-  'shadow-lg shadow-primary-900/30',
-].join(' ');
-
-const SECONDARY_CTA_STYLES = [
-  'border-2 border-white/30',
-  'text-white',
-  'hover:bg-white/10',
-  'backdrop-blur-sm',
-].join(' ');
-
-// 혜택 목록
-const BENEFITS = [
-  '신용카드 불필요',
-  '14일 무료 체험',
-  '언제든 취소 가능',
-];
+import { ArrowRight } from 'lucide-react';
 
 interface CTASectionProps {
   className?: string;
 }
 
 /**
- * 랜딩페이지 CTA 섹션
- * TASK-604: 액션 유도 버튼 및 혜택 설명
+ * 랜딩페이지 CTA 섹션 - design.html 스타일 적용
  */
 export function CTASection({ className }: CTASectionProps) {
   return (
     <section
-      className={`${SECTION_STYLES} ${className || ''}`}
+      className={`py-24 ${className || ''}`}
       aria-labelledby="cta-title"
     >
-      <div className={CONTAINER_STYLES}>
-        <div className={CONTENT_WRAPPER_STYLES}>
-          {/* 타이틀 */}
-          <h2 id="cta-title" className={TITLE_STYLES}>
-            지금 바로 시작하세요
-          </h2>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-primary px-8 py-20 shadow-2xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
+          {/* 배경 그라데이션 */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-blue-700 to-indigo-900 z-0" />
 
-          {/* 설명 */}
-          <p className={DESCRIPTION_STYLES}>
-            복잡한 설정 없이 5분 만에 모든 광고 플랫폼을 연동하고,
-            <br className="hidden sm:block" />
-            AI 기반의 인사이트를 받아보세요.
-          </p>
+          {/* 배경 장식 */}
+          <svg
+            aria-hidden="true"
+            className="absolute left-1/2 top-1/2 -z-0 h-[64rem] w-[64rem] -translate-y-1/2 [mask-image:radial-gradient(closest-side,white,transparent)] sm:left-full sm:-ml-80 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2 lg:translate-y-0 opacity-40"
+            viewBox="0 0 1024 1024"
+          >
+            <circle cx="512" cy="512" fill="url(#cta-gradient)" fillOpacity="0.7" r="512" />
+            <defs>
+              <radialGradient id="cta-gradient">
+                <stop stopColor="#7775D6" />
+                <stop offset="1" stopColor="#E935C1" />
+              </radialGradient>
+            </defs>
+          </svg>
 
-          {/* 혜택 목록 */}
-          <ul className={BENEFITS_LIST_STYLES}>
-            {BENEFITS.map((benefit) => (
-              <li key={benefit} className={BENEFIT_ITEM_STYLES}>
-                <CheckCircle className="w-5 h-5 text-primary-200" aria-hidden="true" />
-                <span>{benefit}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* CTA 버튼 */}
-          <div className={CTA_WRAPPER_STYLES}>
-            <Link href="/signup" aria-label="무료 체험 시작하기">
-              <Button size="lg" className={`group ${PRIMARY_CTA_STYLES}`}>
-                무료 체험 시작하기
-                <ArrowRight
-                  className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                  aria-hidden="true"
-                />
-              </Button>
-            </Link>
-            <Link href="#contact" aria-label="문의하기">
-              <Button size="lg" variant="ghost" className={SECONDARY_CTA_STYLES}>
-                문의하기
-              </Button>
-            </Link>
+          {/* 콘텐츠 */}
+          <div className="relative z-10 mx-auto max-w-md text-center lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
+            <h2 id="cta-title" className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl leading-snug">
+              성장을 자동화할 준비가 되셨나요?
+              <br />
+              지금 바로 무료로 시작해보세요.
+            </h2>
+            <p className="mt-6 text-lg leading-8 text-blue-100 font-medium">
+              1,000명 이상의 셀러들과 함께 더 똑똑한 의사결정을 시작하세요. 마케트가 여러분의 성장을 돕겠습니다.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
+              <Link
+                href="/signup"
+                className="rounded-xl bg-white px-8 py-4 text-base font-bold text-primary shadow-lg hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white transition-all hover:scale-105"
+              >
+                지금 시작하기
+              </Link>
+              <Link
+                href="#features"
+                className="text-sm font-bold leading-6 text-white hover:text-blue-100 transition-colors flex items-center gap-1"
+              >
+                더 알아보기 <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

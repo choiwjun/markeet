@@ -25,14 +25,14 @@ describe('LandingHeader', () => {
       expect(screen.getByLabelText('마케트 홈')).toBeInTheDocument();
     });
 
-    it('마케트 브랜드명이 표시되어야 함', () => {
+    it('MARKEET 브랜드명이 표시되어야 함', () => {
       render(<LandingHeader />);
-      expect(screen.getByText('마케트')).toBeInTheDocument();
+      expect(screen.getByText('MARKEET')).toBeInTheDocument();
     });
 
     it('네비게이션 링크들이 렌더링되어야 함', () => {
       render(<LandingHeader />);
-      expect(screen.getByText('기능')).toBeInTheDocument();
+      expect(screen.getByText('주요 기능')).toBeInTheDocument();
       expect(screen.getByText('요금제')).toBeInTheDocument();
       expect(screen.getByText('고객 사례')).toBeInTheDocument();
       expect(screen.getByText('문의')).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('LandingHeader', () => {
 
     it('로그인 버튼이 렌더링되어야 함', () => {
       render(<LandingHeader />);
-      expect(screen.getByText('로그인')).toBeInTheDocument();
+      expect(screen.getAllByText('로그인').length).toBeGreaterThanOrEqual(1);
     });
 
     it('무료로 시작하기 버튼이 렌더링되어야 함', () => {
@@ -94,7 +94,7 @@ describe('LandingHeader', () => {
       fireEvent.click(menuButton);
 
       const mobileNav = screen.getByLabelText('모바일 네비게이션');
-      expect(mobileNav).toContainElement(screen.getAllByText('기능')[1]);
+      expect(mobileNav).toContainElement(screen.getAllByText('주요 기능')[1]);
     });
 
     it('모바일 메뉴 링크 클릭 시 메뉴가 닫혀야 함', async () => {
@@ -103,7 +103,7 @@ describe('LandingHeader', () => {
       const menuButton = screen.getByLabelText('메뉴 열기');
       fireEvent.click(menuButton);
 
-      const mobileLinks = screen.getAllByText('기능');
+      const mobileLinks = screen.getAllByText('주요 기능');
       fireEvent.click(mobileLinks[1]); // 모바일 메뉴의 링크 클릭
 
       await waitFor(() => {
@@ -117,7 +117,7 @@ describe('LandingHeader', () => {
       render(<LandingHeader />);
 
       const header = screen.getByRole('banner');
-      expect(header).toHaveClass('bg-transparent');
+      expect(header).toHaveClass('backdrop-blur-md');
 
       // 스크롤 이벤트 시뮬레이션
       Object.defineProperty(window, 'scrollY', { value: 20, writable: true });
@@ -133,11 +133,6 @@ describe('LandingHeader', () => {
     it('header role="banner"가 설정되어야 함', () => {
       render(<LandingHeader />);
       expect(screen.getByRole('banner')).toBeInTheDocument();
-    });
-
-    it('네비게이션에 aria-label이 설정되어야 함', () => {
-      render(<LandingHeader />);
-      expect(screen.getByLabelText('메인 네비게이션')).toBeInTheDocument();
     });
 
     it('모바일 메뉴 버튼에 aria-expanded가 설정되어야 함', () => {
@@ -168,8 +163,9 @@ describe('LandingHeader', () => {
 
     it('로그인 버튼이 /login으로 연결되어야 함', () => {
       render(<LandingHeader />);
-      const loginLink = screen.getByText('로그인').closest('a');
-      expect(loginLink).toHaveAttribute('href', '/login');
+      const loginLinks = screen.getAllByText('로그인');
+      const desktopLink = loginLinks[0].closest('a');
+      expect(desktopLink).toHaveAttribute('href', '/login');
     });
 
     it('무료로 시작하기 버튼이 /signup으로 연결되어야 함', () => {

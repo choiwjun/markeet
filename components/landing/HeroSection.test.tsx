@@ -19,23 +19,23 @@ describe('HeroSection', () => {
     it('메인 타이틀이 렌더링되어야 함', () => {
       render(<HeroSection />);
       const title = screen.getByRole('heading', { level: 1 });
-      expect(title).toHaveTextContent('광고 데이터가');
-      expect(title).toHaveTextContent('성과로 연결');
+      expect(title).toHaveTextContent('엑셀 지옥은 이제 끝');
+      expect(title).toHaveTextContent('데이터 기반 성장');
     });
 
     it('부제목이 렌더링되어야 함', () => {
       render(<HeroSection />);
-      expect(screen.getByText(/네이버, 카카오, 구글, 메타 광고를 한 곳에서/)).toBeInTheDocument();
+      expect(screen.getByText(/27.5시간/)).toBeInTheDocument();
     });
 
-    it('무료로 시작하기 CTA 버튼이 렌더링되어야 함', () => {
+    it('무료 체험하기 CTA 버튼이 렌더링되어야 함', () => {
       render(<HeroSection />);
-      expect(screen.getByLabelText('무료로 시작하기')).toBeInTheDocument();
+      expect(screen.getByText('무료 체험하기')).toBeInTheDocument();
     });
 
-    it('기능 살펴보기 버튼이 렌더링되어야 함', () => {
+    it('서비스 둘러보기 버튼이 렌더링되어야 함', () => {
       render(<HeroSection />);
-      expect(screen.getByLabelText('기능 살펴보기')).toBeInTheDocument();
+      expect(screen.getByText('서비스 둘러보기')).toBeInTheDocument();
     });
   });
 
@@ -59,16 +59,30 @@ describe('HeroSection', () => {
     });
   });
 
-  describe('링크', () => {
-    it('무료로 시작하기 버튼이 /signup으로 연결되어야 함', () => {
+  describe('대시보드 프리뷰', () => {
+    it('대시보드 프리뷰가 렌더링되어야 함', () => {
       render(<HeroSection />);
-      const ctaLink = screen.getByLabelText('무료로 시작하기');
+      expect(screen.getByText('총 매출')).toBeInTheDocument();
+      expect(screen.getByText('주문 수')).toBeInTheDocument();
+      expect(screen.getByText('광고비')).toBeInTheDocument();
+    });
+
+    it('AI 인사이트가 표시되어야 함', () => {
+      render(<HeroSection />);
+      expect(screen.getByText('AI 인사이트')).toBeInTheDocument();
+    });
+  });
+
+  describe('링크', () => {
+    it('무료 체험하기 버튼이 /signup으로 연결되어야 함', () => {
+      render(<HeroSection />);
+      const ctaLink = screen.getByText('무료 체험하기').closest('a');
       expect(ctaLink).toHaveAttribute('href', '/signup');
     });
 
-    it('기능 살펴보기 버튼이 #features로 연결되어야 함', () => {
+    it('서비스 둘러보기 버튼이 #features로 연결되어야 함', () => {
       render(<HeroSection />);
-      const featuresLink = screen.getByLabelText('기능 살펴보기');
+      const featuresLink = screen.getByText('서비스 둘러보기').closest('a');
       expect(featuresLink).toHaveAttribute('href', '#features');
     });
   });
@@ -76,8 +90,7 @@ describe('HeroSection', () => {
   describe('접근성', () => {
     it('섹션에 aria-labelledby가 설정되어야 함', () => {
       render(<HeroSection />);
-      const section = screen.getByRole('region', { hidden: true }) ||
-                      document.querySelector('[aria-labelledby="hero-title"]');
+      const section = document.querySelector('[aria-labelledby="hero-title"]');
       expect(section).toBeInTheDocument();
     });
 
@@ -99,12 +112,6 @@ describe('HeroSection', () => {
       render(<HeroSection className="custom-class" />);
       const section = document.querySelector('.custom-class');
       expect(section).toBeInTheDocument();
-    });
-
-    it('그라데이션 배경이 적용되어야 함', () => {
-      render(<HeroSection />);
-      const section = document.querySelector('[aria-labelledby="hero-title"]');
-      expect(section).toHaveClass('bg-gradient-to-b');
     });
   });
 });

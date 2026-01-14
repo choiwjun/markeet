@@ -4,19 +4,31 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0e111b;
 
-  /* Primary Colors */
+  /* Primary Colors - design.html 기준 */
+  --color-primary: #2452eb;
+  --color-primary-dark: #1a3db0;
+  --color-primary-light: #5477f5;
   --color-primary-50: #EFF6FF;
   --color-primary-100: #DBEAFE;
   --color-primary-200: #BFDBFE;
   --color-primary-300: #93C5FD;
   --color-primary-400: #60A5FA;
-  --color-primary-500: #3B82F6;
-  --color-primary-600: #2563EB;
-  --color-primary-700: #1D4ED8;
+  --color-primary-500: #2452eb;
+  --color-primary-600: #2452eb;
+  --color-primary-700: #1a3db0;
   --color-primary-800: #1E40AF;
   --color-primary-900: #1E3A8A;
+
+  /* Text Colors - design.html 기준 */
+  --text-main: #0e111b;
+  --text-sub: #4d5f99;
+
+  /* Background Colors */
+  --background-light: #ffffff;
+  --neutral-gray: #F0F2F5;
+  --accent-green: #22C55E;
 
   /* Neutral/Gray Colors */
   --color-gray-50: #F9FAFB;
@@ -77,7 +89,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #111421;
     --foreground: #ededed;
   }
 }
@@ -86,6 +98,56 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Roboto', 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  word-break: keep-all;
+  letter-spacing: -0.02em;
+  line-height: 1.7;
+}
+
+/* design.html 스타일 - 그라데이션 텍스트 */
+.text-gradient {
+  background: linear-gradient(135deg, #2452eb 0%, #1a3db0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-sub {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* design.html 스타일 - 히어로 패턴 배경 */
+.hero-pattern {
+  background-color: #ffffff;
+  background-image: linear-gradient(rgba(36, 82, 235, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36, 82, 235, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* design.html 스타일 - 플로팅 애니메이션 */
+.rocket-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* design.html 스타일 - 파티클 효과 */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: particle-fade 3s infinite alternate;
+}
+
+@keyframes particle-fade {
+  0% { opacity: 0.3; transform: scale(1); }
+  100% { opacity: 0.7; transform: scale(1.2); }
 }
 
 @layer utilities {
@@ -135,6 +197,15 @@ body {
   }
 }
 
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @layer utilities {
   .animate-shimmer {
     animation: shimmer 2s infinite linear;
@@ -150,5 +221,36 @@ body {
 
   .animate-slideIn {
     animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-float-slow {
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/* design.html 스타일 - 박스 쉐도우 */
+@layer utilities {
+  .shadow-soft {
+    box-shadow: 0 20px 40px -15px rgba(36, 82, 235, 0.1);
+  }
+
+  .shadow-soft-lg {
+    box-shadow: 0 25px 50px -12px rgba(36, 82, 235, 0.15);
+  }
+
+  .shadow-deep {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 25px rgba(36, 82, 235, 0.25);
+  }
+
+  .shadow-glow-intense {
+    box-shadow: 0 0 40px rgba(36, 82, 235, 0.4);
   }
 }

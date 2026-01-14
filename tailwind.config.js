@@ -11,18 +11,30 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // design.html 기준 primary 색상
         primary: {
+          DEFAULT: "#2452eb",
           50: "var(--color-primary-50)",
           100: "var(--color-primary-100)",
           200: "var(--color-primary-200)",
           300: "var(--color-primary-300)",
           400: "var(--color-primary-400)",
-          500: "var(--color-primary-500)",
-          600: "var(--color-primary-600)",
-          700: "var(--color-primary-700)",
+          500: "#2452eb",
+          600: "#2452eb",
+          700: "#1a3db0",
           800: "var(--color-primary-800)",
           900: "var(--color-primary-900)",
+          dark: "#1a3db0",
+          light: "#5477f5",
         },
+        // design.html 기준 텍스트 색상
+        "text-main": "#0e111b",
+        "text-sub": "#4d5f99",
+        // design.html 기준 배경 색상
+        "background-light": "#ffffff",
+        "background-dark": "#111421",
+        "neutral-gray": "#F0F2F5",
+        "accent-green": "#22C55E",
         gray: {
           50: "var(--color-gray-50)",
           100: "var(--color-gray-100)",
@@ -77,6 +89,35 @@ module.exports = {
         "2xl": ["var(--text-2xl)", { lineHeight: "var(--text-2xl-line-height)" }],
         "3xl": ["var(--text-3xl)", { lineHeight: "var(--text-3xl-line-height)" }],
         "4xl": ["var(--text-4xl)", { lineHeight: "var(--text-4xl-line-height)" }],
+      },
+      fontFamily: {
+        display: ["Pretendard", "sans-serif"],
+        body: ["Pretendard", "sans-serif"],
+      },
+      borderRadius: {
+        DEFAULT: "0.5rem",
+        lg: "1rem",
+        xl: "1.5rem",
+        "2xl": "2rem",
+        "3xl": "2.5rem",
+        full: "9999px",
+      },
+      boxShadow: {
+        soft: "0 20px 40px -15px rgba(36, 82, 235, 0.1)",
+        "soft-lg": "0 25px 50px -12px rgba(36, 82, 235, 0.15)",
+        deep: "0 25px 50px -12px rgba(0, 0, 0, 0.1)",
+        glow: "0 0 25px rgba(36, 82, 235, 0.25)",
+        "glow-intense": "0 0 40px rgba(36, 82, 235, 0.4)",
+      },
+      letterSpacing: {
+        "tight-custom": "-0.02em",
+      },
+      lineHeight: {
+        "relaxed-custom": "1.7",
+      },
+      animation: {
+        "float-slow": "float 8s ease-in-out infinite",
+        "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },
