@@ -1,8 +1,9 @@
 import { HTMLAttributes, forwardRef } from 'react';
-import { Inbox, FileQuestion, Search, FolderOpen, Database } from 'lucide-react';
+import Link from 'next/link';
+import { Inbox, FileQuestion, Search, FolderOpen, Database, BarChart3 } from 'lucide-react';
 import { Button } from './Button';
 
-export type EmptyStateVariant = 'default' | 'search' | 'data' | 'file' | 'folder';
+export type EmptyStateVariant = 'default' | 'search' | 'data' | 'file' | 'folder' | 'chart';
 
 interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
   variant?: EmptyStateVariant;
@@ -13,6 +14,9 @@ interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
     label: string;
     onClick: () => void;
   };
+  /** 액션 버튼 링크 (action과 함께 사용 불가) */
+  actionLabel?: string;
+  actionHref?: string;
   secondaryAction?: {
     label: string;
     onClick: () => void;
@@ -56,6 +60,7 @@ const DEFAULT_ICONS: Record<EmptyStateVariant, React.ReactNode> = {
   data: <Database className={ICON_STYLES} />,
   file: <FileQuestion className={ICON_STYLES} />,
   folder: <FolderOpen className={ICON_STYLES} />,
+  chart: <BarChart3 className={ICON_STYLES} />,
 };
 
 // 기본 제목 매핑
@@ -65,6 +70,7 @@ const DEFAULT_TITLES: Record<EmptyStateVariant, string> = {
   data: '연동된 데이터가 없습니다',
   file: '파일이 없습니다',
   folder: '폴더가 비어있습니다',
+  chart: '차트 데이터가 없습니다',
 };
 
 // 기본 설명 매핑
@@ -74,6 +80,7 @@ const DEFAULT_DESCRIPTIONS: Record<EmptyStateVariant, string> = {
   data: '플랫폼을 연동하면 데이터가 자동으로 수집됩니다.',
   file: '업로드된 파일이 없습니다.',
   folder: '이 폴더에 파일이 없습니다.',
+  chart: '선택한 기간에 표시할 차트 데이터가 없습니다.',
 };
 
 export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
@@ -84,6 +91,8 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
       description,
       icon,
       action,
+      actionLabel,
+      actionHref,
       secondaryAction,
       className,
       ...props
@@ -93,6 +102,8 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
     const displayIcon = icon || DEFAULT_ICONS[variant];
     const displayTitle = title || DEFAULT_TITLES[variant];
     const displayDescription = description || DEFAULT_DESCRIPTIONS[variant];
+
+    const hasAction = action || (actionLabel && actionHref) || secondaryAction;
 
     return (
       <div
@@ -105,12 +116,19 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
         <div className={ICON_WRAPPER_STYLES}>{displayIcon}</div>
         <h3 className={TITLE_STYLES}>{displayTitle}</h3>
         <p className={DESCRIPTION_STYLES}>{displayDescription}</p>
-        {(action || secondaryAction) && (
+        {hasAction && (
           <div className="flex items-center gap-3">
             {action && (
               <Button variant="primary" onClick={action.onClick}>
                 {action.label}
               </Button>
+            )}
+            {actionLabel && actionHref && (
+              <Link href={actionHref}>
+                <Button variant="primary">
+                  {actionLabel}
+                </Button>
+              </Link>
             )}
             {secondaryAction && (
               <Button variant="secondary" onClick={secondaryAction.onClick}>

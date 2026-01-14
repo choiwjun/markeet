@@ -43,3 +43,18 @@ export function formatCompactNumber(value: number): string {
 export function formatNumberWithCommas(value: number): string {
   return new Intl.NumberFormat('ko-KR').format(value);
 }
+
+/**
+ * 일반 숫자 포맷팅 (천 단위 구분)
+ * formatNumberWithCommas와 동일하지만 더 직관적인 이름
+ */
+export function formatNumber(value: number): string {
+  return new Intl.NumberFormat('ko-KR').format(value);
+}
+
+/**
+ * ROAS 포맷팅 (예: 3.20)
+ */
+export function formatRoas(value: number, decimals: number = 2): string {
+  return value.toFixed(decimals);
+}

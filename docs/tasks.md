@@ -603,156 +603,176 @@
 ## M5: 대시보드
 
 ### TASK-501: 대시보드 레이아웃 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 사이드바 + 헤더 + 메인 콘텐츠 레이아웃
-- **검증:** 레이아웃 렌더링 테스트 통과
-- **파일:** `app/(dashboard)/layout.tsx`
+- **검증:** 레이아웃 렌더링 테스트 통과 (8개 테스트) ✅
+- **파일:** `app/(dashboard)/layout.tsx`, `app/(dashboard)/layout.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-502: 사이드바 네비게이션 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 대시보드, 리포트, 설정 메뉴가 있는 사이드바
-- **검증:** 사이드바 렌더링 테스트 통과
-- **파일:** `components/layout/Sidebar.tsx`
+- **검증:** 사이드바 렌더링 테스트 통과 (15개 테스트) ✅
+- **파일:** `components/layout/Sidebar.tsx`, `components/layout/Sidebar.test.tsx`
 - **근거:** UserFlow - 대시보드 메인 화면
+- **완료일:** 2026-01-14
 
 ### TASK-503: 모바일 사이드바 (햄버거 메뉴) 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 모바일에서 햄버거 버튼 클릭 시 사이드바 슬라이드
-- **테스트:** `모바일 화면에서 햄버거 클릭 시 메뉴 열림`
-- **파일:** `components/layout/Sidebar.tsx`, `components/layout/MobileMenu.tsx`
+- **테스트:** `모바일 화면에서 햄버거 클릭 시 메뉴 열림` (12개 테스트) ✅
+- **파일:** `components/layout/MobileMenu.tsx`, `components/layout/MobileMenu.test.tsx`
 - **근거:** UserFlow - 반응형 UI (모바일 햄버거 메뉴)
+- **완료일:** 2026-01-14
 
 ### TASK-504: 헤더 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 로고, 알림, 사용자 메뉴가 있는 헤더
-- **검증:** 헤더 렌더링 테스트 통과
-- **파일:** `components/layout/Header.tsx`
+- **검증:** 헤더 렌더링 테스트 통과 (15개 테스트) ✅
+- **파일:** `components/layout/Header.tsx`, `components/layout/Header.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-505: 지표 카드 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 숫자 지표를 표시하는 카드 (라벨, 값, 증감 표시)
-- **검증:** 지표 카드 렌더링 테스트 통과
-- **파일:** `components/dashboard/MetricCard.tsx`
+- **검증:** 지표 카드 렌더링 테스트 통과 (17개 테스트) ✅
+- **파일:** `components/dashboard/MetricCard.tsx`, `components/dashboard/MetricCard.test.tsx`
 - **근거:** UserFlow - 대시보드 주요 지표 카드
+- **완료일:** 2026-01-14
 
 ### TASK-506: 지표 증감 표시 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 전일/전주 대비 증감률 표시 (TrendingUp/Down 아이콘)
-- **테스트:** `양수면 녹색 상승 아이콘, 음수면 빨간 하락 아이콘`
+- **테스트:** `양수면 녹색 상승 아이콘, 음수면 빨간 하락 아이콘` ✅
 - **파일:** `components/dashboard/MetricCard.tsx`
 - **근거:** DesignSystem - 아이콘 (TrendingUp/Down)
+- **완료일:** 2026-01-14
 
 ### TASK-507: 대시보드 메인 페이지 레이아웃 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 지표 카드 그리드 + 차트 영역 배치
-- **검증:** 페이지 레이아웃 렌더링 테스트 통과
-- **파일:** `app/(dashboard)/dashboard/page.tsx`
+- **검증:** 페이지 레이아웃 렌더링 테스트 통과 ✅
+- **파일:** `app/(dashboard)/dashboard/page.tsx`, `app/(dashboard)/dashboard/page.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-508: 기간 선택 필터 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
-- **설명:** 7일/30일/커스텀 기간 선택 드롭다운
-- **검증:** 필터 렌더링 테스트 통과
-- **파일:** `components/dashboard/DateRangeFilter.tsx`
+- **설명:** 7일/30일/90일/커스텀 기간 선택 드롭다운
+- **검증:** 필터 렌더링 테스트 통과 (17개 테스트) ✅
+- **파일:** `components/dashboard/DateRangeFilter.tsx`, `components/dashboard/DateRangeFilter.test.tsx`
 - **근거:** PRD - 통합 대시보드
+- **완료일:** 2026-01-14
 
 ### TASK-509: 기간 선택 상태 관리 구현
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 선택된 기간에 따라 데이터 다시 조회
-- **테스트:** `기간 변경 시 API 재호출`
-- **파일:** `hooks/useDateRange.ts`
+- **테스트:** `기간 변경 시 API 재호출` (12개 테스트) ✅
+- **파일:** `hooks/useDateRange.ts`, `hooks/useDateRange.test.ts`
+- **완료일:** 2026-01-14
 
 ### TASK-510: 대시보드 데이터 조회 API 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
-- **설명:** 선택된 기간의 집계 데이터 반환 (총 광고비, 매출, ROAS)
-- **테스트:** `대시보드 API 호출 시 집계 데이터 반환`
+- **설명:** 선택된 기간의 집계 데이터 반환 (총 광고비, 매출, ROAS, 클릭수, 전환수)
+- **테스트:** `대시보드 API 호출 시 집계 데이터 반환` ✅
 - **파일:** `app/api/dashboard/route.ts`
 - **근거:** DatabaseDesign - 대시보드 주요 지표 조회 쿼리
+- **완료일:** 2026-01-14
 
 ### TASK-511: 대시보드 데이터 조회 훅 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** React Query를 사용한 대시보드 데이터 페칭 (5분 캐싱)
-- **테스트:** `useDashboardData 훅이 올바른 데이터 반환`
+- **테스트:** `useDashboardData 훅이 올바른 데이터 반환` ✅
 - **파일:** `hooks/useDashboardData.ts`
 - **근거:** TRD - React Query 캐싱 (5분)
+- **완료일:** 2026-01-14
 
 ### TASK-512: 지표 카드에 실제 데이터 연동
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** API에서 받은 데이터를 지표 카드에 표시
-- **테스트:** `대시보드 로드 시 총 광고비, 총 매출, ROAS 표시`
+- **테스트:** `대시보드 로드 시 총 광고비, 총 매출, ROAS 표시` ✅
 - **파일:** `app/(dashboard)/dashboard/page.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-513: 플랫폼별 비교 막대 차트 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Recharts를 사용한 플랫폼별 성과 비교 막대 차트
-- **검증:** 차트 렌더링 테스트 통과
-- **파일:** `components/charts/PlatformBarChart.tsx`
+- **검증:** 차트 렌더링 테스트 통과 (5개 테스트) ✅
+- **파일:** `components/charts/PlatformBarChart.tsx`, `components/charts/PlatformBarChart.test.tsx`
 - **근거:** DesignSystem - Recharts 스타일 가이드
+- **완료일:** 2026-01-14
 
 ### TASK-514: 차트 툴팁 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** 차트 호버 시 표시되는 커스텀 툴팁
-- **검증:** 툴팁 렌더링 테스트 통과
-- **파일:** `components/charts/ChartTooltip.tsx`
+- **검증:** 툴팁 렌더링 테스트 통과 (9개 테스트) ✅
+- **파일:** `components/charts/ChartTooltip.tsx`, `components/charts/ChartTooltip.test.tsx`
 - **근거:** DesignSystem - Chart tooltip 설정
+- **완료일:** 2026-01-14
 
 ### TASK-515: 플랫폼별 데이터 조회 API 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 플랫폼별 집계 데이터 반환
-- **테스트:** `플랫폼별 API 호출 시 플랫폼별 집계 데이터 반환`
+- **테스트:** `플랫폼별 API 호출 시 플랫폼별 집계 데이터 반환` ✅
 - **파일:** `app/api/dashboard/platforms/route.ts`
 - **근거:** DatabaseDesign - 플랫폼별 비교 쿼리
+- **완료일:** 2026-01-14
 
 ### TASK-516: 플랫폼별 차트에 실제 데이터 연동
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** API 데이터를 막대 차트에 표시
-- **테스트:** `플랫폼별 차트에 각 플랫폼 데이터 표시`
+- **테스트:** `플랫폼별 차트에 각 플랫폼 데이터 표시` ✅
 - **파일:** `app/(dashboard)/dashboard/page.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-517: 일자별 추이 라인 차트 컴포넌트 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** STRUCTURAL
 - **설명:** Recharts를 사용한 일자별 추이 라인 차트
-- **검증:** 차트 렌더링 테스트 통과
-- **파일:** `components/charts/TrendLineChart.tsx`
+- **검증:** 차트 렌더링 테스트 통과 (7개 테스트) ✅
+- **파일:** `components/charts/TrendLineChart.tsx`, `components/charts/TrendLineChart.test.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-518: 일자별 데이터 조회 API 생성
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 일자별 집계 데이터 반환
-- **테스트:** `일자별 API 호출 시 일자별 집계 데이터 반환`
+- **테스트:** `일자별 API 호출 시 일자별 집계 데이터 반환` ✅
 - **파일:** `app/api/dashboard/trends/route.ts`
 - **근거:** DatabaseDesign - 일자별 추이 쿼리
+- **완료일:** 2026-01-14
 
 ### TASK-519: 일자별 차트에 실제 데이터 연동
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** API 데이터를 라인 차트에 표시
-- **테스트:** `일자별 차트에 추이 데이터 표시`
+- **테스트:** `일자별 차트에 추이 데이터 표시` ✅
 - **파일:** `app/(dashboard)/dashboard/page.tsx`
+- **완료일:** 2026-01-14
 
 ### TASK-520: 대시보드 로딩/에러 상태 처리
-- **상태:** `TODO`
+- **상태:** `DONE`
 - **타입:** BEHAVIORAL
 - **설명:** 데이터 로딩 중 스켈레톤, 에러 시 ErrorState 표시
-- **테스트:** `로딩 중 스켈레톤 표시, 에러 시 재시도 버튼 표시`
+- **테스트:** `로딩 중 스켈레톤 표시, 에러 시 재시도 버튼 표시` ✅
 - **파일:** `app/(dashboard)/dashboard/page.tsx`
 - **근거:** UserFlow - 데이터 로딩 상태, 에러 처리 흐름
+- **완료일:** 2026-01-14
 
 ---
 
@@ -822,6 +842,7 @@
 |------|------|-----------|
 | 2026-01-14 | v1.0 | 초기 문서 생성 (50개 태스크) |
 | 2026-01-14 | v2.0 | 누락 항목 추가 (90개 태스크) |
+| 2026-01-14 | v2.1 | M5 대시보드 마일스톤 완료 (TASK-501~520, 576개 테스트 통과) |
 
 ### v2.0 추가 내용
 - **M0**: Git 초기화, Zustand, React Query, Lucide, Pretendard 폰트, 숫자 포맷팅
