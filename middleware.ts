@@ -46,6 +46,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // 환경 변수 검증
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    // 환경 변수가 없으면 인증 검사 없이 통과 (개발 환경 등)
+    console.error('[Middleware] Supabase environment variables not set');
+    return NextResponse.next();
+  }
+
   // Supabase 클라이언트 생성
   let response = NextResponse.next({
     request: {
@@ -54,8 +64,8 @@ export async function middleware(request: NextRequest) {
   });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
