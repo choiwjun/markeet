@@ -102,7 +102,7 @@ async function updateSyncJobStatus(
 }
 
 /**
- * 데이터 동기화를 트리거합니다.
+ * 데이터 동기화를 트리거합니다. (백그라운드 실행 - 온보딩용)
  * 비동기로 실행되며, 실패해도 연동 자체는 성공으로 처리됩니다.
  *
  * @param userId - 사용자 ID
@@ -129,6 +129,46 @@ export async function triggerDataSync(
   });
 
   return jobId;
+}
+
+/**
+ * 데이터 동기화를 동기적으로 실행합니다. (API 라우트용)
+ * Vercel 서버리스 환경에서는 응답 전에 작업이 완료되어야 합니다.
+ *
+ * @param userId - 사용자 ID
+ * @param platform - 플랫폼 코드
+ * @returns 동기화 결과
+ */
+export async function executeSyncAndWait(
+  userId: string,
+  platform: PlatformCode
+): Promise<{ jobId: string; result: SyncResult }> {
+  // 작업 생성
+  const jobId = await createSyncJob(userId, platform);
+
+  try {
+    // 동기적으로 실행하고 결과 대기
+    await executeSyncJob(jobId, userId, platform);
+
+    // 최종 상태 조회
+    const status = await getSyncJobStatus(jobId);
+
+    return {
+      jobId,
+      result: status?.result || { success: true, message: '동기화 완료' },
+    };
+  } catch (error) {
+    console.error(`[SyncData] Job ${jobId} failed:`, error);
+    const errorResult: SyncResult = {
+      success: false,
+      message: '동기화 실패',
+      error: error instanceof Error ? error.message : '알 수 없는 오류',
+    };
+
+    await updateSyncJobStatus(jobId, 'failed', errorResult);
+
+    return { jobId, result: errorResult };
+  }
 }
 
 /**

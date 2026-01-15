@@ -6,8 +6,11 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { triggerDataSync, triggerFullSync, getUserSyncJobs } from '@/lib/platforms/syncData';
+import { executeSyncAndWait, getUserSyncJobs } from '@/lib/platforms/syncData';
 import type { PlatformCode } from '@/types/database';
+
+// Vercel 서버리스 함수 타임아웃 설정 (최대 60초)
+export const maxDuration = 60;
 
 // 유효한 플랫폼 코드 목록
 const VALID_PLATFORMS: PlatformCode[] = [
@@ -91,22 +94,37 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const jobId = await triggerDataSync(user.id, platform);
+      // 동기적으로 실행하고 결과 대기 (Vercel 서버리스 환경 대응)
+      const { jobId, result } = await executeSyncAndWait(user.id, platform);
 
       return NextResponse.json({
-        success: true,
-        message: `${platform} 동기화가 시작되었습니다.`,
+        success: result.success,
+        message: result.message,
         jobId,
+        recordCount: result.recordCount,
+        error: result.error,
       });
     }
 
-    // 전체 플랫폼 동기화
-    const jobIds = await triggerFullSync(user.id, connectedPlatforms);
+    // 전체 플랫폼 동기화 (순차 실행)
+    const results: Array<{ platform: PlatformCode; jobId: string; success: boolean; message: string }> = [];
+
+    for (const p of connectedPlatforms) {
+      const { jobId, result } = await executeSyncAndWait(user.id, p);
+      results.push({
+        platform: p,
+        jobId,
+        success: result.success,
+        message: result.message,
+      });
+    }
+
+    const successCount = results.filter(r => r.success).length;
 
     return NextResponse.json({
-      success: true,
-      message: `${connectedPlatforms.length}개 플랫폼 동기화가 시작되었습니다.`,
-      jobIds,
+      success: successCount > 0,
+      message: `${successCount}/${connectedPlatforms.length}개 플랫폼 동기화 완료`,
+      results,
       platforms: connectedPlatforms,
     });
   } catch (error) {
