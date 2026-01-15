@@ -19,7 +19,8 @@
       "Bash(Select-Object Name, Length)",
       "Bash(wc:*)",
       "Bash(tree:*)",
-      "Bash(npx vercel logs:*)"
+      "Bash(npx vercel logs:*)",
+      "Bash(npx vitest:*)"
     ]
   }
 }

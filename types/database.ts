@@ -133,6 +133,61 @@ export type ChatHistoryInsert = Omit<ChatHistory, 'id' | 'created_at'> & {
 
 export type ChatHistoryUpdate = Partial<Omit<ChatHistory, 'id' | 'created_at'>>;
 
+// 알림 타입
+export type NotificationType =
+  | 'api_key_expired'
+  | 'api_key_expiring'
+  | 'sync_error'
+  | 'anomaly_spend'
+  | 'anomaly_roas'
+  | 'daily_summary'
+  | 'weekly_report'
+  | 'system';
+
+// Notification 테이블 타입
+export interface Notification {
+  id: string;
+  user_id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  data: Json | null;
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
+}
+
+export type NotificationInsert = Omit<Notification, 'id' | 'created_at' | 'is_read' | 'read_at'> & {
+  id?: string;
+  created_at?: string;
+  is_read?: boolean;
+  read_at?: string | null;
+};
+
+export type NotificationUpdate = Partial<Pick<Notification, 'is_read' | 'read_at'>>;
+
+// Notification Settings 테이블 타입
+export interface NotificationSettings {
+  id: string;
+  user_id: string;
+  email_enabled: boolean;
+  email_daily_summary: boolean;
+  email_weekly_report: boolean;
+  push_enabled: boolean;
+  anomaly_alerts: boolean;
+  api_key_alerts: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export type NotificationSettingsInsert = Omit<NotificationSettings, 'id' | 'created_at' | 'updated_at'> & {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type NotificationSettingsUpdate = Partial<Omit<NotificationSettings, 'id' | 'user_id' | 'created_at'>>;
+
 // Sync Jobs 테이블 타입 (동기화 작업 추적)
 export type SyncJobStatus = 'pending' | 'running' | 'completed' | 'failed';
 
@@ -192,10 +247,24 @@ export interface Database {
         Insert: SyncJobInsert;
         Update: SyncJobUpdate;
       };
+      notifications: {
+        Row: Notification;
+        Insert: NotificationInsert;
+        Update: NotificationUpdate;
+      };
+      notification_settings: {
+        Row: NotificationSettings;
+        Insert: NotificationSettingsInsert;
+        Update: NotificationSettingsUpdate;
+      };
     };
     Views: Record<string, never>;
     Functions: {
       cleanup_old_sync_jobs: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
+      cleanup_old_notifications: {
         Args: Record<string, never>;
         Returns: number;
       };
@@ -205,6 +274,7 @@ export interface Database {
       platform_status: PlatformStatus;
       report_type: ReportType;
       sync_job_status: SyncJobStatus;
+      notification_type: NotificationType;
     };
   };
 }

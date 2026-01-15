@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, Bell, User, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Menu, User, LogOut, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { NotificationDropdown } from './NotificationDropdown';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -36,21 +37,6 @@ const MENU_BUTTON_STYLES = [
 ].join(' ');
 
 const RIGHT_SECTION_STYLES = 'flex items-center gap-2';
-
-const NOTIFICATION_BUTTON_STYLES = [
-  'relative p-2 rounded-lg',
-  'text-slate-600 dark:text-slate-400',
-  'hover:bg-slate-100 dark:hover:bg-slate-800',
-  'hover:text-slate-900 dark:hover:text-slate-200',
-  'transition-colors duration-200',
-].join(' ');
-
-const NOTIFICATION_DOT_STYLES = [
-  'absolute top-1.5 right-1.5',
-  'w-2 h-2',
-  'bg-danger-500',
-  'rounded-full',
-].join(' ');
 
 const USER_MENU_BUTTON_STYLES = [
   'flex items-center gap-2',
@@ -189,15 +175,8 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         {/* 오른쪽 영역 */}
         <div className={RIGHT_SECTION_STYLES}>
-          {/* 알림 버튼 */}
-          <button
-            className={NOTIFICATION_BUTTON_STYLES}
-            aria-label="알림"
-          >
-            <Bell className="w-5 h-5" />
-            {/* 알림 표시 (하드코딩 - 추후 실제 알림 시스템 연동) */}
-            <span className={NOTIFICATION_DOT_STYLES} aria-hidden="true" />
-          </button>
+          {/* 알림 드롭다운 */}
+          <NotificationDropdown />
 
           {/* 사용자 메뉴 */}
           <div className="relative" ref={dropdownRef}>

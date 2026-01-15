@@ -125,7 +125,7 @@ export function LoginForm({ onSubmit, isLoading = false, error }: LoginFormProps
   };
 
   // 포커스 아웃 핸들러
-  const handleBlur = (name: keyof LoginFormData) => () => {
+  const handleBlur = (name: 'email' | 'password') => () => {
     setTouched(prev => ({ ...prev, [name]: true }));
     setErrors(prev => ({
       ...prev,

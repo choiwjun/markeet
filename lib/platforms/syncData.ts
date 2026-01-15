@@ -13,6 +13,10 @@ import {
   type AnyCredentials,
   type CollectionResult,
 } from '@/lib/platforms/collectors';
+import {
+  createApiKeyExpiredNotification,
+  createSyncErrorNotification,
+} from '@/lib/notifications/createNotification';
 import type { PlatformCode, SyncJobStatus, SyncJob, SyncJobInsert, SyncJobUpdate } from '@/types/database';
 
 // 동기화 결과 타입
@@ -150,6 +154,16 @@ async function executeSyncJob(
       // 실패한 경우 failed 상태로 저장
       await updateSyncJobStatus(jobId, 'failed', result);
       console.warn(`[SyncData] Job ${jobId} failed:`, result);
+
+      // TASK-805: 실패 시 알림 생성
+      const errorMessage = result.error || result.message;
+      if (errorMessage.includes('401') || errorMessage.includes('인증') || errorMessage.includes('API 키')) {
+        // API 키 만료 알림
+        await createApiKeyExpiredNotification(userId, platform, errorMessage);
+      } else {
+        // 일반 동기화 오류 알림
+        await createSyncErrorNotification(userId, platform, errorMessage);
+      }
     }
   } catch (error) {
     throw error;

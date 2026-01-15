@@ -57,7 +57,7 @@ export const createClient = async () => {
  * - 백그라운드 작업, 관리자 작업에서만 사용
  * - ⚠️ 주의: user_id 필터를 반드시 적용해야 함
  */
-export const createAdminClient = async () => {
+export const createServiceClient = async () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -99,3 +99,6 @@ export const createAdminClient = async () => {
     },
   });
 };
+
+// Alias for backward compatibility
+export const createAdminClient = createServiceClient;
