@@ -48,7 +48,7 @@ const LOGO_TEXT_STYLES = [
 ].join(' ');
 
 const MAIN_CONTENT_STYLES = [
-  'pt-24 pb-12',
+  'pt-20 pb-12',
   'max-w-4xl mx-auto',
   'px-4 sm:px-6 lg:px-8',
 ].join(' ');

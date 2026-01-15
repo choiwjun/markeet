@@ -22,7 +22,7 @@ interface ConnectionState {
 }
 
 // 스타일 상수
-const HEADER_WRAPPER_STYLES = 'text-center mb-10';
+const HEADER_WRAPPER_STYLES = 'text-center mb-6';
 
 const TITLE_STYLES = [
   'text-2xl sm:text-3xl font-bold',
