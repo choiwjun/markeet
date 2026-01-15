@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Loader2, Trash2, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Plus, Loader2, Trash2, RefreshCw, AlertTriangle, Play } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal, ModalFooter } from '@/components/ui/Modal';
 import { PlatformCard } from '@/components/onboarding/PlatformCard';
@@ -83,6 +83,7 @@ export default function SettingsConnectionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Connection | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [syncingPlatform, setSyncingPlatform] = useState<PlatformCode | null>(null);
 
   // 연동 목록 조회
   const fetchConnections = useCallback(async () => {
@@ -174,6 +175,35 @@ export default function SettingsConnectionsPage() {
     router.push('/onboarding');
   }, [router]);
 
+  // 데이터 동기화 실행
+  const handleSyncData = useCallback(async (connection: Connection) => {
+    if (syncingPlatform) return;
+
+    setSyncingPlatform(connection.platform);
+    try {
+      const response = await fetch('/api/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform: connection.platform }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(`동기화가 시작되었습니다.\n${result.message || ''}`);
+        // 연동 목록 새로고침 (last_sync_at 업데이트 확인)
+        setTimeout(() => fetchConnections(), 3000);
+      } else {
+        alert(`동기화 실패: ${result.error || '알 수 없는 오류'}`);
+      }
+    } catch (error) {
+      console.error('Sync error:', error);
+      alert('동기화 요청 중 오류가 발생했습니다.');
+    } finally {
+      setSyncingPlatform(null);
+    }
+  }, [syncingPlatform, fetchConnections]);
+
   // 연동 상태 조회
   const getConnectionStatus = useCallback(
     (platformCode: PlatformCode): PlatformStatus | null => {
@@ -241,6 +271,21 @@ export default function SettingsConnectionsPage() {
 
                   {/* 액션 버튼 오버레이 */}
                   <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSyncData(connection);
+                      }}
+                      className="p-2 rounded-lg bg-white dark:bg-slate-700 shadow-md hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors disabled:opacity-50"
+                      title="데이터 동기화"
+                      disabled={syncingPlatform === connection.platform}
+                    >
+                      {syncingPlatform === connection.platform ? (
+                        <Loader2 className="w-4 h-4 text-primary-500 animate-spin" />
+                      ) : (
+                        <Play className="w-4 h-4 text-primary-500" />
+                      )}
+                    </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
