@@ -2,6 +2,8 @@
 
 import { ReactNode, useState } from 'react';
 import { Sidebar, Header, MobileMenu } from '@/components/layout';
+import { SessionExpiredAlert } from '@/components/auth';
+import { useAuth } from '@/hooks/useAuth';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -43,6 +45,7 @@ const CONTENT_STYLES = [
  */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { sessionExpired, clearSessionExpired } = useAuth();
 
   const openMobileMenu = () => {
     setIsMobileMenuOpen(true);
@@ -74,6 +77,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </main>
         </div>
       </div>
+
+      {/* 세션 만료 알림 */}
+      <SessionExpiredAlert
+        isVisible={sessionExpired}
+        onClose={clearSessionExpired}
+      />
     </div>
   );
 }

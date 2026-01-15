@@ -175,6 +175,32 @@ describe('LoginForm', () => {
         expect(mockOnSubmit).toHaveBeenCalledWith({
           email: 'test@example.com',
           password: 'password123',
+          rememberMe: false,
+        });
+      });
+    });
+
+    it('로그인 유지 체크 후 폼 제출 시 rememberMe가 true로 전달된다', async () => {
+      const user = userEvent.setup();
+      const mockOnSubmit = vi.fn();
+      render(<LoginForm onSubmit={mockOnSubmit} />);
+
+      const emailInput = screen.getByLabelText('이메일');
+      const passwordInput = screen.getByLabelText('비밀번호');
+      const rememberMeCheckbox = screen.getByLabelText('로그인 유지');
+
+      await user.type(emailInput, 'test@example.com');
+      await user.type(passwordInput, 'password123');
+      await user.click(rememberMeCheckbox);
+
+      const submitButton = screen.getByRole('button', { name: '로그인' });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(mockOnSubmit).toHaveBeenCalledWith({
+          email: 'test@example.com',
+          password: 'password123',
+          rememberMe: true,
         });
       });
     });

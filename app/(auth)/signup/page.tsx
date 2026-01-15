@@ -28,7 +28,8 @@ export default function SignUpPage() {
 
       // 이메일 인증이 필요한 경우
       if (result.user && !result.session) {
-        router.push('/signup/verify-email');
+        const encodedEmail = encodeURIComponent(data.email);
+        router.push(`/signup/verify-email?email=${encodedEmail}`);
         return;
       }
 

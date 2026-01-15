@@ -19,6 +19,7 @@ export interface SignUpData {
 export interface SignInData {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 // 에러 메시지 매핑
@@ -74,15 +75,34 @@ export async function signUp({ email, password, name }: SignUpData): Promise<Aut
   }
 }
 
+// 로그인 유지 설정 키
+const REMEMBER_ME_KEY = 'markeet_remember_me';
+
 /**
  * 이메일/비밀번호로 로그인
+ *
+ * rememberMe가 true이면 세션을 유지하고, false이면 브라우저 종료 시 세션 만료
  */
-export async function signIn({ email, password }: SignInData): Promise<AuthResponse> {
+export async function signIn({ email, password, rememberMe = false }: SignInData): Promise<AuthResponse> {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    if (!error && data.session) {
+      // 로그인 유지 설정 저장
+      if (typeof window !== 'undefined') {
+        if (rememberMe) {
+          localStorage.setItem(REMEMBER_ME_KEY, 'true');
+        } else {
+          localStorage.removeItem(REMEMBER_ME_KEY);
+          // rememberMe가 false인 경우, sessionStorage에도 저장하여
+          // 브라우저 닫으면 로그아웃되도록 표시
+          sessionStorage.setItem(REMEMBER_ME_KEY, 'false');
+        }
+      }
+    }
 
     return {
       user: data.user,
@@ -100,11 +120,26 @@ export async function signIn({ email, password }: SignInData): Promise<AuthRespo
 }
 
 /**
+ * 로그인 유지 설정 확인
+ */
+export function isRememberMeEnabled(): boolean {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem(REMEMBER_ME_KEY) === 'true';
+}
+
+/**
  * 로그아웃
  */
 export async function signOut(): Promise<{ error: AuthError | null }> {
   try {
     const { error } = await supabase.auth.signOut();
+
+    // 로그인 유지 설정 제거
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(REMEMBER_ME_KEY);
+      sessionStorage.removeItem(REMEMBER_ME_KEY);
+    }
+
     return { error };
   } catch (err) {
     const error = err as AuthError;
@@ -186,4 +221,26 @@ export function onAuthStateChange(
   return supabase.auth.onAuthStateChange((event, session) => {
     callback(event, session);
   });
+}
+
+/**
+ * 이메일 인증 메일 재발송
+ *
+ * @param email - 인증 이메일을 받을 주소
+ * @param type - 인증 타입 ('signup' | 'email_change')
+ */
+export async function resendVerificationEmail(
+  email: string,
+  type: 'signup' | 'email_change' = 'signup'
+): Promise<{ error: AuthError | null }> {
+  try {
+    const { error } = await supabase.auth.resend({
+      type,
+      email,
+    });
+    return { error };
+  } catch (err) {
+    const error = err as AuthError;
+    return { error };
+  }
 }

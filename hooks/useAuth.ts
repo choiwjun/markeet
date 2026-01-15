@@ -15,11 +15,13 @@ interface AuthState {
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  sessionExpired: boolean;
 }
 
 interface UseAuthReturn extends AuthState {
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  clearSessionExpired: () => void;
 }
 
 /**
@@ -45,6 +47,7 @@ export function useAuth(): UseAuthReturn {
     session: null,
     isLoading: true,
     isAuthenticated: false,
+    sessionExpired: false,
   });
 
   // 사용자 정보 새로고침
@@ -55,19 +58,21 @@ export function useAuth(): UseAuthReturn {
         getSession(),
       ]);
 
-      setState({
+      setState(prev => ({
         user,
         session,
         isLoading: false,
         isAuthenticated: !!user && !!session,
-      });
+        sessionExpired: prev.sessionExpired,
+      }));
     } catch {
-      setState({
+      setState(prev => ({
         user: null,
         session: null,
         isLoading: false,
         isAuthenticated: false,
-      });
+        sessionExpired: prev.sessionExpired,
+      }));
     }
   }, []);
 
@@ -81,12 +86,18 @@ export function useAuth(): UseAuthReturn {
         session: null,
         isLoading: false,
         isAuthenticated: false,
+        sessionExpired: false,
       });
       router.push('/login');
     } catch {
       setState(prev => ({ ...prev, isLoading: false }));
     }
   }, [router]);
+
+  // 세션 만료 상태 초기화
+  const clearSessionExpired = useCallback(() => {
+    setState(prev => ({ ...prev, sessionExpired: false }));
+  }, []);
 
   // 초기화 및 인증 상태 변경 감지
   useEffect(() => {
@@ -101,18 +112,22 @@ export function useAuth(): UseAuthReturn {
           session,
           isLoading: false,
           isAuthenticated: !!session?.user,
+          sessionExpired: false,
         });
       } else if (event === 'SIGNED_OUT') {
-        setState({
+        setState(prev => ({
           user: null,
           session: null,
           isLoading: false,
           isAuthenticated: false,
-        });
+          // 이전에 인증된 상태였다면 세션 만료로 간주
+          sessionExpired: prev.isAuthenticated,
+        }));
       } else if (event === 'TOKEN_REFRESHED') {
         setState(prev => ({
           ...prev,
           session,
+          sessionExpired: false,
         }));
       } else if (event === 'USER_UPDATED') {
         setState(prev => ({
@@ -133,6 +148,7 @@ export function useAuth(): UseAuthReturn {
     ...state,
     signOut,
     refreshUser,
+    clearSessionExpired,
   };
 }
 

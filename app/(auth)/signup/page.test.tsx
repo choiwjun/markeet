@@ -89,7 +89,7 @@ describe('SignUpPage', () => {
       await user.click(screen.getByRole('button', { name: '가입하기' }));
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/signup/verify-email');
+        expect(mockPush).toHaveBeenCalledWith('/signup/verify-email?email=test%40example.com');
       });
     });
   });

@@ -15,10 +15,11 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      console.log('[Login] Attempting sign in...');
+      console.log('[Login] Attempting sign in...', { rememberMe: data.rememberMe });
       const result = await signIn({
         email: data.email,
         password: data.password,
+        rememberMe: data.rememberMe,
       });
       console.log('[Login] Sign in result:', { user: result.user?.email, error: result.error?.message });
 

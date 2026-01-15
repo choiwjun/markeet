@@ -143,6 +143,7 @@ describe('LoginPage', () => {
         expect(mockSignIn).toHaveBeenCalledWith({
           email: 'test@example.com',
           password: 'password123',
+          rememberMe: false,
         });
       });
     });

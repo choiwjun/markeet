@@ -16,6 +16,7 @@ interface LoginFormProps {
 export interface LoginFormData {
   email: string;
   password: string;
+  rememberMe: boolean;
 }
 
 interface FormErrors {
@@ -37,7 +38,23 @@ const LINK_STYLES = [
   'transition-colors',
 ].join(' ');
 
-const FORGOT_PASSWORD_WRAPPER = 'flex justify-end mt-2';
+const FORGOT_PASSWORD_WRAPPER = 'flex items-center justify-between mt-2';
+
+const CHECKBOX_CONTAINER_STYLES = 'flex items-center gap-2';
+
+const CHECKBOX_STYLES = [
+  'w-4 h-4',
+  'rounded',
+  'border-slate-300 dark:border-slate-600',
+  'text-primary-600',
+  'focus:ring-primary-500 focus:ring-offset-0',
+  'cursor-pointer',
+].join(' ');
+
+const CHECKBOX_LABEL_STYLES = [
+  'text-sm text-slate-600 dark:text-slate-400',
+  'cursor-pointer select-none',
+].join(' ');
 
 const FOOTER_STYLES = [
   'mt-6 pt-6',
@@ -58,6 +75,7 @@ export function LoginForm({ onSubmit, isLoading = false, error }: LoginFormProps
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
+    rememberMe: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
@@ -200,8 +218,21 @@ export function LoginForm({ onSubmit, isLoading = false, error }: LoginFormProps
             autoComplete="current-password"
           />
 
-          {/* 비밀번호 찾기 링크 */}
+          {/* 로그인 유지 & 비밀번호 찾기 */}
           <div className={FORGOT_PASSWORD_WRAPPER}>
+            {/* 로그인 유지 체크박스 */}
+            <label className={CHECKBOX_CONTAINER_STYLES}>
+              <input
+                type="checkbox"
+                checked={formData.rememberMe}
+                onChange={(e) => setFormData(prev => ({ ...prev, rememberMe: e.target.checked }))}
+                className={CHECKBOX_STYLES}
+                disabled={isLoading}
+              />
+              <span className={CHECKBOX_LABEL_STYLES}>로그인 유지</span>
+            </label>
+
+            {/* 비밀번호 찾기 링크 */}
             <Link href="/forgot-password" className={LINK_STYLES}>
               비밀번호를 잊으셨나요?
             </Link>
