@@ -14,10 +14,13 @@
     "supabase:types:local": "supabase gen types typescript --local > types/supabase.ts"
   },
   "dependencies": {
+    "@google-analytics/data": "^5.2.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
     "@tanstack/react-query": "^5.90.17",
+    "bullmq": "^5.66.5",
     "framer-motion": "^12.26.2",
+    "ioredis": "^5.9.1",
     "lucide-react": "^0.562.0",
     "next": "14.0.4",
     "react": "^18",
