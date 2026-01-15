@@ -7,21 +7,22 @@
  * TRD 근거: Supabase Vault (AES-256) - 민감 정보 암호화
  *
  * 주의: ENCRYPTION_KEY는 최소 32자 이상의 강력한 랜덤 문자열이어야 합니다.
- * 예: openssl rand -base64 32
+ * 예: openssl rand -hex 32
  */
 
+import crypto from 'crypto';
+
 // 암호화 알고리즘 설정
-const ALGORITHM = 'AES-GCM';
-const KEY_LENGTH = 256;
+const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 12; // GCM 권장 IV 길이
-const TAG_LENGTH = 128; // GCM 인증 태그 길이 (bits)
+const AUTH_TAG_LENGTH = 16; // GCM 인증 태그 길이 (bytes)
 const MIN_KEY_LENGTH = 32; // 최소 키 길이
 
 /**
  * 환경에서 암호화 키를 가져옵니다.
  * 보안상 ENCRYPTION_KEY 환경 변수만 사용합니다.
  */
-function getEncryptionKey(): string {
+function getEncryptionKey(): Buffer {
   const key = process.env.ENCRYPTION_KEY;
 
   if (!key) {
@@ -38,76 +39,15 @@ function getEncryptionKey(): string {
     );
   }
 
-  return key;
-}
-
-/**
- * 문자열을 Uint8Array로 변환합니다.
- */
-function stringToUint8Array(str: string): Uint8Array {
-  return new TextEncoder().encode(str);
-}
-
-/**
- * Uint8Array를 Base64 문자열로 변환합니다.
- */
-function uint8ArrayToBase64(array: Uint8Array): string {
-  // Node.js 환경
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(array).toString('base64');
-  }
-  // 브라우저 환경
-  return btoa(String.fromCharCode.apply(null, Array.from(array)));
-}
-
-/**
- * Base64 문자열을 Uint8Array로 변환합니다.
- */
-function base64ToUint8Array(base64: string): Uint8Array {
-  // Node.js 환경
-  if (typeof Buffer !== 'undefined') {
-    return new Uint8Array(Buffer.from(base64, 'base64'));
-  }
-  // 브라우저 환경
-  const binary = atob(base64);
-  const array = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    array[i] = binary.charCodeAt(i);
-  }
-  return array;
-}
-
-/**
- * 암호화 키를 CryptoKey로 변환합니다.
- */
-async function getCryptoKey(): Promise<CryptoKey> {
-  const keyString = getEncryptionKey();
-  const keyData = stringToUint8Array(keyString);
-
   // 키를 32바이트 (256비트)로 맞춤
-  const hash = await crypto.subtle.digest('SHA-256', keyData as BufferSource);
-
-  return crypto.subtle.importKey(
-    'raw',
-    hash,
-    { name: ALGORITHM, length: KEY_LENGTH },
-    false,
-    ['encrypt', 'decrypt']
-  );
-}
-
-/**
- * 랜덤 IV를 생성합니다.
- */
-function generateIV(): Uint8Array {
-  return crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  return crypto.createHash('sha256').update(key).digest();
 }
 
 /**
  * API 키를 암호화합니다.
  *
  * @param plaintext - 암호화할 평문
- * @returns 암호화된 문자열 (Base64 인코딩: IV + 암호문)
+ * @returns 암호화된 문자열 (Base64 인코딩: IV + 암호문 + AuthTag)
  */
 export async function encryptApiKey(plaintext: string): Promise<string> {
   if (!plaintext) {
@@ -115,26 +55,22 @@ export async function encryptApiKey(plaintext: string): Promise<string> {
   }
 
   try {
-    const key = await getCryptoKey();
-    const iv = generateIV();
-    const data = stringToUint8Array(plaintext);
+    const key = getEncryptionKey();
+    const iv = crypto.randomBytes(IV_LENGTH);
 
-    const encrypted = await crypto.subtle.encrypt(
-      {
-        name: ALGORITHM,
-        iv: iv as BufferSource,
-        tagLength: TAG_LENGTH,
-      },
-      key,
-      data as BufferSource
-    );
+    const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
 
-    // IV와 암호문을 합쳐서 Base64로 인코딩
-    const combined = new Uint8Array(iv.length + encrypted.byteLength);
-    combined.set(iv, 0);
-    combined.set(new Uint8Array(encrypted), iv.length);
+    const encrypted = Buffer.concat([
+      cipher.update(plaintext, 'utf8'),
+      cipher.final()
+    ]);
 
-    return uint8ArrayToBase64(combined);
+    const authTag = cipher.getAuthTag();
+
+    // IV + 암호문 + AuthTag를 합쳐서 Base64로 인코딩
+    const combined = Buffer.concat([iv, encrypted, authTag]);
+
+    return combined.toString('base64');
   } catch (error) {
     console.error('[Vault] 암호화 실패:', error);
     throw new Error('API 키 암호화에 실패했습니다.');
@@ -153,24 +89,23 @@ export async function decryptApiKey(ciphertext: string): Promise<string> {
   }
 
   try {
-    const key = await getCryptoKey();
-    const combined = base64ToUint8Array(ciphertext);
+    const key = getEncryptionKey();
+    const combined = Buffer.from(ciphertext, 'base64');
 
-    // IV와 암호문 분리
-    const iv = combined.slice(0, IV_LENGTH);
-    const encrypted = combined.slice(IV_LENGTH);
+    // IV, 암호문, AuthTag 분리
+    const iv = combined.subarray(0, IV_LENGTH);
+    const authTag = combined.subarray(combined.length - AUTH_TAG_LENGTH);
+    const encrypted = combined.subarray(IV_LENGTH, combined.length - AUTH_TAG_LENGTH);
 
-    const decrypted = await crypto.subtle.decrypt(
-      {
-        name: ALGORITHM,
-        iv: iv as BufferSource,
-        tagLength: TAG_LENGTH,
-      },
-      key,
-      encrypted as BufferSource
-    );
+    const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
+    decipher.setAuthTag(authTag);
 
-    return new TextDecoder().decode(decrypted);
+    const decrypted = Buffer.concat([
+      decipher.update(encrypted),
+      decipher.final()
+    ]);
+
+    return decrypted.toString('utf8');
   } catch (error) {
     console.error('[Vault] 복호화 실패:', error);
     throw new Error('API 키 복호화에 실패했습니다.');
@@ -208,7 +143,7 @@ export async function decryptCredentials(
  * (기본적으로 Base64 형식 + 최소 길이 체크)
  */
 export function isEncrypted(value: string): boolean {
-  if (!value || value.length < IV_LENGTH + 16) {
+  if (!value || value.length < IV_LENGTH + AUTH_TAG_LENGTH + 16) {
     return false;
   }
 
