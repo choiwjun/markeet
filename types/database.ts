@@ -95,25 +95,71 @@ export type AdDataInsert = Omit<AdData, 'id' | 'created_at'> & {
 
 export type AdDataUpdate = Partial<Omit<AdData, 'id' | 'created_at'>>;
 
+// 리포트 상태 타입
+export type ReportStatus = 'draft' | 'generating' | 'completed' | 'failed';
+
+// 리포트 템플릿 타입
+export type ReportTemplate = 'standard' | 'detailed' | 'summary';
+
 // Reports 테이블 타입
 export interface Report {
   id: string;
   user_id: string;
   type: ReportType;
+  title: string;
+  status: ReportStatus;
   period_start: string;
   period_end: string;
+  platforms: string[];
   data_summary: Json | null;
   insights: Json | null;
+  ai_insights: string | null;
   pdf_url: string | null;
+  share_token: string | null;
+  share_expires_at: string | null;
+  is_public: boolean;
+  email_sent_at: string | null;
+  template: ReportTemplate;
   created_at: string;
 }
 
-export type ReportInsert = Omit<Report, 'id' | 'created_at'> & {
+export type ReportInsert = Omit<Report, 'id' | 'created_at' | 'status' | 'share_token' | 'share_expires_at' | 'is_public' | 'email_sent_at'> & {
   id?: string;
   created_at?: string;
+  status?: ReportStatus;
+  share_token?: string | null;
+  share_expires_at?: string | null;
+  is_public?: boolean;
+  email_sent_at?: string | null;
 };
 
-export type ReportUpdate = Partial<Omit<Report, 'id' | 'created_at'>>;
+export type ReportUpdate = Partial<Omit<Report, 'id' | 'created_at' | 'user_id'>>;
+
+// 리포트 스케줄 타입
+export type ScheduleType = 'weekly' | 'monthly';
+
+export interface ReportSchedule {
+  id: string;
+  user_id: string;
+  schedule_type: ScheduleType;
+  platforms: string[];
+  send_email: boolean;
+  is_active: boolean;
+  last_run_at: string | null;
+  next_run_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ReportScheduleInsert = Omit<ReportSchedule, 'id' | 'created_at' | 'updated_at' | 'last_run_at' | 'next_run_at'> & {
+  id?: string;
+  created_at?: string;
+  updated_at?: string;
+  last_run_at?: string | null;
+  next_run_at?: string | null;
+};
+
+export type ReportScheduleUpdate = Partial<Omit<ReportSchedule, 'id' | 'user_id' | 'created_at'>>;
 
 // Chat History 테이블 타입 (Phase 2)
 export interface ChatHistory {

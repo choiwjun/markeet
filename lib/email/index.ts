@@ -285,3 +285,112 @@ export async function sendAnomalyAlertEmail(
     html,
   });
 }
+
+/**
+ * 리포트 이메일 발송
+ * TASK-1007: 리포트를 이메일로 발송
+ */
+export async function sendReportEmail(
+  to: string,
+  report: {
+    id: string;
+    title: string;
+    type: string;
+    period_start: string;
+    period_end: string;
+    data_summary: {
+      totalSpend?: number;
+      totalRevenue?: number;
+      avgRoas?: number;
+      totalConversions?: number;
+    } | null;
+    ai_insights?: string | null;
+  }
+): Promise<{ id: string } | null> {
+  const summary = report.data_summary || {};
+  const formatCurrency = (value: number) => value.toLocaleString('ko-KR');
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  const typeLabel = report.type === 'weekly' ? '주간' : report.type === 'monthly' ? '월간' : '사용자 지정';
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1e293b; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px 12px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">📄 ${report.title}</h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">
+          ${typeLabel} 리포트 | ${formatDate(report.period_start)} ~ ${formatDate(report.period_end)}
+        </p>
+      </div>
+
+      <div style="background: white; padding: 30px; border: 1px solid #e2e8f0; border-top: none;">
+        <h2 style="font-size: 18px; margin: 0 0 20px 0; color: #1e293b;">핵심 성과 요약</h2>
+
+        <div style="display: grid; gap: 16px; margin-bottom: 30px;">
+          <div style="background: #f8fafc; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span style="color: #64748b;">총 광고비</span>
+            <span style="font-weight: 700;">${summary.totalSpend ? formatCurrency(summary.totalSpend) + '원' : '-'}</span>
+          </div>
+          <div style="background: #f8fafc; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span style="color: #64748b;">총 매출</span>
+            <span style="font-weight: 700; color: #059669;">${summary.totalRevenue ? formatCurrency(summary.totalRevenue) + '원' : '-'}</span>
+          </div>
+          <div style="background: #f8fafc; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span style="color: #64748b;">ROAS</span>
+            <span style="font-weight: 700; color: #7c3aed;">${summary.avgRoas ? summary.avgRoas.toFixed(2) + 'x' : '-'}</span>
+          </div>
+          <div style="background: #f8fafc; padding: 16px; border-radius: 8px; display: flex; justify-content: space-between;">
+            <span style="color: #64748b;">전환수</span>
+            <span style="font-weight: 700;">${summary.totalConversions ? formatCurrency(summary.totalConversions) : '-'}</span>
+          </div>
+        </div>
+
+        ${report.ai_insights ? `
+        <h2 style="font-size: 18px; margin: 0 0 15px 0; color: #1e293b;">AI 인사이트</h2>
+        <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+          ${report.ai_insights.split('\n\n').map(p => `<p style="margin: 0 0 10px 0; color: #334155;">${p}</p>`).join('')}
+        </div>
+        ` : ''}
+
+        <div style="text-align: center;">
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://markeet.com'}/reports/${report.id}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">리포트 전체 보기</a>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+        <p style="margin: 0;">이 이메일은 Markeet에서 발송되었습니다.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+${report.title}
+${typeLabel} 리포트 | ${formatDate(report.period_start)} ~ ${formatDate(report.period_end)}
+
+핵심 성과 요약:
+- 총 광고비: ${summary.totalSpend ? formatCurrency(summary.totalSpend) + '원' : '-'}
+- 총 매출: ${summary.totalRevenue ? formatCurrency(summary.totalRevenue) + '원' : '-'}
+- ROAS: ${summary.avgRoas ? summary.avgRoas.toFixed(2) + 'x' : '-'}
+- 전환수: ${summary.totalConversions || '-'}
+
+${report.ai_insights ? `AI 인사이트:\n${report.ai_insights}` : ''}
+
+리포트 전체 보기: ${process.env.NEXT_PUBLIC_APP_URL || 'https://markeet.com'}/reports/${report.id}
+  `;
+
+  return sendEmail({
+    to,
+    subject: `[Markeet] ${report.title}`,
+    html,
+    text,
+  });
+}
