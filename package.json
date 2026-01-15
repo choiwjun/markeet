@@ -23,8 +23,10 @@
     "ioredis": "^5.9.1",
     "lucide-react": "^0.562.0",
     "next": "14.0.4",
+    "openai": "^6.16.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-markdown": "^10.1.0",
     "recharts": "^3.6.0",
     "resend": "^6.7.0",
     "zustand": "^5.0.10"

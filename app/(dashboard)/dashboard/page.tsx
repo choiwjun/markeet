@@ -1,6 +1,7 @@
 'use client';
 
-import { DollarSign, TrendingUp, MousePointer, ShoppingCart, Sparkles, Calendar, Download, Search } from 'lucide-react';
+import { useState } from 'react';
+import { DollarSign, TrendingUp, MousePointer, ShoppingCart, Sparkles, Calendar, Download, Search, MessageSquare, X } from 'lucide-react';
 import { MetricCard, DateRangeFilter } from '@/components/dashboard';
 import { PlatformBarChart, TrendLineChart } from '@/components/charts';
 import { useDateRange } from '@/hooks/useDateRange';
@@ -11,6 +12,7 @@ import { SkeletonMetricCard } from '@/components/ui/Skeleton';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Card } from '@/components/ui/Card';
+import { AiChatPanel } from '@/components/ai';
 
 // 스타일 상수
 const METRIC_GRID_STYLES = 'grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-6';
@@ -28,6 +30,9 @@ const SKELETON_CHART_STYLES = 'h-[400px] bg-slate-100 dark:bg-slate-800 rounded-
  * TASK-520: 대시보드 로딩/에러 상태 처리
  */
 export default function DashboardPage() {
+  // AI 채팅 패널 상태
+  const [showAiPanel, setShowAiPanel] = useState(false);
+
   // 기간 선택 상태
   const { selectedOption, setOption, startDateISO, endDateISO } = useDateRange('7d');
 
@@ -248,19 +253,34 @@ export default function DashboardPage() {
     <div className="max-w-[1280px] mx-auto flex flex-col gap-6">
       {/* AI Insight 패널 - design.html 스타일 적용 */}
       <div className="bg-gradient-to-br from-[#eff4ff] to-white dark:from-slate-800 dark:to-slate-900 p-5 rounded-2xl border border-blue-100 dark:border-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] relative">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="bg-white dark:bg-slate-800 p-1.5 rounded-lg shadow-sm border border-blue-50 dark:border-slate-700">
-            <Sparkles className="w-[18px] h-[18px] text-primary" />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-800 p-1.5 rounded-lg shadow-sm border border-blue-50 dark:border-slate-700">
+              <Sparkles className="w-[18px] h-[18px] text-primary" />
+            </div>
+            <span className="font-bold text-primary dark:text-blue-400 text-sm">AI 인사이트</span>
           </div>
-          <span className="font-bold text-primary dark:text-blue-400 text-sm">AI 인사이트</span>
+          <button
+            onClick={() => setShowAiPanel(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary bg-white dark:bg-slate-800 rounded-lg border border-blue-200 dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
+            AI에게 질문하기
+          </button>
         </div>
         <div className="space-y-3">
-          <div className="bg-white dark:bg-slate-800 p-4 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 shadow-sm border border-blue-50/50 dark:border-slate-700 leading-relaxed hover:shadow-md transition-shadow">
-            🚀 플랫폼을 연동하면 AI가 매출 및 광고 성과를 분석하여 인사이트를 제공합니다.
-          </div>
-          <div className="bg-white dark:bg-slate-800 p-4 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 shadow-sm border border-blue-50/50 dark:border-slate-700 leading-relaxed hover:shadow-md transition-shadow">
-            💡 매일 아침, 전날의 성과 요약과 개선 제안을 받아보세요.
-          </div>
+          <button
+            onClick={() => setShowAiPanel(true)}
+            className="w-full text-left bg-white dark:bg-slate-800 p-4 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 shadow-sm border border-blue-50/50 dark:border-slate-700 leading-relaxed hover:shadow-md hover:border-primary/30 transition-all"
+          >
+            🚀 &quot;이번 주 광고비 총액은?&quot; - 자연어로 데이터를 질문해보세요
+          </button>
+          <button
+            onClick={() => setShowAiPanel(true)}
+            className="w-full text-left bg-white dark:bg-slate-800 p-4 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 shadow-sm border border-blue-50/50 dark:border-slate-700 leading-relaxed hover:shadow-md hover:border-primary/30 transition-all"
+          >
+            💡 &quot;플랫폼별 ROAS 비교해줘&quot; - AI가 차트와 함께 분석 결과를 보여드립니다
+          </button>
         </div>
       </div>
 
@@ -268,19 +288,22 @@ export default function DashboardPage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="flex flex-col gap-1.5 max-w-lg w-full">
           <h2 className="text-slate-900 dark:text-white text-2xl font-extrabold tracking-tight">대시보드 개요</h2>
-          <div className="relative mt-2 w-full group">
+          <button
+            onClick={() => setShowAiPanel(true)}
+            className="relative mt-2 w-full group text-left"
+          >
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Search className="w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+              <Search className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
             </div>
-            <input
-              className="block w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
-              placeholder='AI에게 질문하기: "지난주 대비 네이버 광고 효율은 어때?"'
-              type="text"
-            />
+            <div
+              className="block w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-400 dark:text-slate-500 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm cursor-pointer"
+            >
+              AI에게 질문하기: &quot;지난주 대비 네이버 광고 효율은 어때?&quot;
+            </div>
             <div className="absolute inset-y-0 right-2 flex items-center">
-              <span className="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">Enter</span>
+              <span className="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">Click</span>
             </div>
-          </div>
+          </button>
         </div>
         <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm shrink-0 self-end">
           <DateRangeFilter
@@ -306,6 +329,22 @@ export default function DashboardPage() {
           {renderPlatformChart()}
         </div>
       </section>
+
+      {/* AI 채팅 패널 모달 */}
+      {showAiPanel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl h-[80vh] max-h-[700px]">
+            <button
+              onClick={() => setShowAiPanel(false)}
+              className="absolute -top-2 -right-2 z-10 p-2 bg-white dark:bg-slate-800 rounded-full shadow-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              aria-label="닫기"
+            >
+              <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+            </button>
+            <AiChatPanel className="h-full shadow-2xl" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
