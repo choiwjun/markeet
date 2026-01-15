@@ -1,5 +1,6 @@
 import { HTMLAttributes, forwardRef } from 'react';
-import { TrendingUp, TrendingDown, Minus, DollarSign, Wallet, BarChart3, MousePointer } from 'lucide-react';
+import Link from 'next/link';
+import { TrendingUp, TrendingDown, Minus, DollarSign, Wallet, BarChart3, MousePointer, ChevronRight } from 'lucide-react';
 import { formatNumber, formatCurrency, formatPercent } from '@/lib/utils/format';
 
 // 지표 값 포맷 타입
@@ -28,6 +29,8 @@ interface MetricCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> 
   loading?: boolean;
   /** 카드 색상 테마 */
   colorTheme?: CardColorTheme;
+  /** 클릭 시 이동할 URL */
+  href?: string;
 }
 
 // 색상 테마별 스타일
@@ -123,6 +126,7 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
       icon,
       loading = false,
       colorTheme = 'blue',
+      href,
       className,
       ...props
     },
@@ -132,12 +136,8 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
     const trendDirection = changePercent !== undefined ? getTrendDirection(changePercent) : null;
     const theme = COLOR_THEMES[colorTheme];
 
-    return (
-      <div
-        ref={ref}
-        className={`bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] flex flex-col justify-between gap-2 group ${theme.border} hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-default ${className || ''}`}
-        {...props}
-      >
+    const cardContent = (
+      <>
         {/* 배경 아이콘 */}
         <div className={`absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity ${theme.bgIcon}`}>
           {BG_ICONS[colorTheme]}
@@ -189,6 +189,33 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
             </div>
           )}
         </div>
+
+        {/* 드릴다운 화살표 */}
+        {href && (
+          <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <ChevronRight className="w-5 h-5 text-slate-400" />
+          </div>
+        )}
+      </>
+    );
+
+    const cardClasses = `bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] flex flex-col justify-between gap-2 group ${theme.border} hover:-translate-y-1 transition-all duration-300 relative overflow-hidden ${href ? 'cursor-pointer' : 'cursor-default'} ${className || ''}`;
+
+    if (href) {
+      return (
+        <Link href={href} className={cardClasses}>
+          {cardContent}
+        </Link>
+      );
+    }
+
+    return (
+      <div
+        ref={ref}
+        className={cardClasses}
+        {...props}
+      >
+        {cardContent}
       </div>
     );
   }

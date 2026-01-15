@@ -5,6 +5,8 @@
 
 export { MetricCard } from './MetricCard';
 export { DateRangeFilter } from './DateRangeFilter';
+export { CampaignTable } from './CampaignTable';
 
 export type { MetricFormat, TrendDirection } from './MetricCard';
 export type { DateRangeOption, DateRange } from './DateRangeFilter';
+export type { CampaignData } from './CampaignTable';

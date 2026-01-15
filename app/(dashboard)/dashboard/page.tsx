@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { DollarSign, TrendingUp, MousePointer, ShoppingCart, Sparkles, Calendar, Download, Search, MessageSquare, X } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { DollarSign, TrendingUp, MousePointer, ShoppingCart, Sparkles, Calendar, Download, Search, MessageSquare, X, RefreshCw } from 'lucide-react';
 import { MetricCard, DateRangeFilter } from '@/components/dashboard';
 import { PlatformBarChart, TrendLineChart } from '@/components/charts';
 import { useDateRange } from '@/hooks/useDateRange';
@@ -13,6 +13,8 @@ import { ErrorState } from '@/components/ui/ErrorState';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Card } from '@/components/ui/Card';
 import { AiChatPanel } from '@/components/ai';
+import { GuideTour } from '@/components/onboarding/GuideTour';
+import { exportDashboardData } from '@/lib/export/csvExport';
 
 // 스타일 상수
 const METRIC_GRID_STYLES = 'grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-6';
@@ -70,12 +72,38 @@ export default function DashboardPage() {
     endDate: endDateISO,
   });
 
+  // 새로고침 상태
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   // 전체 다시 시도
   const handleRetryAll = () => {
     refetchDashboard();
     refetchPlatform();
     refetchTrend();
   };
+
+  // 데이터 새로고침 (TASK-1205)
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        refetchDashboard(),
+        refetchPlatform(),
+        refetchTrend(),
+      ]);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetchDashboard, refetchPlatform, refetchTrend]);
+
+  // CSV 내보내기 (TASK-1206)
+  const handleExportCsv = useCallback(() => {
+    exportDashboardData({
+      metrics: dashboardData?.metrics,
+      platformData: platformData?.data,
+      trendData: trendData?.data,
+    });
+  }, [dashboardData, platformData, trendData]);
 
   // 비교 기간 텍스트
   const getChangePeriodText = () => {
@@ -143,6 +171,7 @@ export default function DashboardPage() {
           changePeriod={changePeriod}
           icon={<DollarSign className="w-5 h-5" />}
           colorTheme="blue"
+          href="/dashboard/metrics/spend"
         />
         <MetricCard
           label="총 매출액"
@@ -152,6 +181,7 @@ export default function DashboardPage() {
           changePeriod={changePeriod}
           icon={<ShoppingCart className="w-5 h-5" />}
           colorTheme="purple"
+          href="/dashboard/metrics/revenue"
         />
         <MetricCard
           label="ROAS (광고 수익률)"
@@ -161,6 +191,7 @@ export default function DashboardPage() {
           changePeriod={changePeriod}
           icon={<TrendingUp className="w-5 h-5" />}
           colorTheme="orange"
+          href="/dashboard/metrics/roas"
         />
       </div>
     );
@@ -305,13 +336,25 @@ export default function DashboardPage() {
             </div>
           </button>
         </div>
-        <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm shrink-0 self-end">
+        <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm shrink-0 self-end" data-tour="date-filter">
           <DateRangeFilter
             value={selectedOption}
             onChange={(option) => setOption(option)}
           />
           <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 transition-colors" title="데이터 내보내기">
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 transition-colors disabled:opacity-50"
+            title="데이터 새로고침"
+          >
+            <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+          </button>
+          <button
+            onClick={handleExportCsv}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 transition-colors"
+            title="CSV 내보내기"
+          >
             <Download className="w-5 h-5" />
           </button>
         </div>
@@ -345,6 +388,9 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* 온보딩 가이드 툴팁 (TASK-1204) */}
+      <GuideTour />
     </div>
   );
 }
