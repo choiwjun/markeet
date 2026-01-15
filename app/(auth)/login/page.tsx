@@ -25,8 +25,8 @@ export default function LoginPage() {
         return;
       }
 
-      // 로그인 성공 시 대시보드로 이동
-      router.push('/dashboard');
+      // 로그인 성공 시 대시보드로 이동 (하드 네비게이션으로 쿠키 반영)
+      window.location.href = '/dashboard';
     } catch {
       setError('로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
     } finally {
