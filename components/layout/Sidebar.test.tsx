@@ -17,7 +17,12 @@ describe('Sidebar', () => {
   describe('렌더링', () => {
     it('로고가 렌더링되어야 함', () => {
       render(<Sidebar />);
-      expect(screen.getByText('마케트')).toBeInTheDocument();
+      expect(screen.getByText('MARKEET')).toBeInTheDocument();
+    });
+
+    it('서브타이틀이 렌더링되어야 함', () => {
+      render(<Sidebar />);
+      expect(screen.getByText('AI Marketing Console')).toBeInTheDocument();
     });
 
     it('네비게이션 메뉴가 렌더링되어야 함', () => {
@@ -28,9 +33,9 @@ describe('Sidebar', () => {
       expect(screen.getByText('설정')).toBeInTheDocument();
     });
 
-    it('버전 정보가 렌더링되어야 함', () => {
+    it('사용자 프로필 영역이 렌더링되어야 함', () => {
       render(<Sidebar />);
-      expect(screen.getByText('마케트 v1.0.0')).toBeInTheDocument();
+      expect(screen.getByText('사용자')).toBeInTheDocument();
     });
 
     it('isOpen이 false일 때 렌더링되지 않아야 함', () => {

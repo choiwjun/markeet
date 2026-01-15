@@ -61,8 +61,8 @@ describe('MetricCard', () => {
 
       const badge = screen.getByTestId('change-badge');
       expect(badge).toHaveTextContent('+12.5%');
-      // success 색상 클래스 확인
-      expect(badge.className).toContain('success');
+      // green 색상 클래스 확인
+      expect(badge.className).toContain('green');
     });
 
     it('음수 증감률에 빨간 하락 아이콘이 표시되어야 함', () => {
@@ -76,8 +76,8 @@ describe('MetricCard', () => {
 
       const badge = screen.getByTestId('change-badge');
       expect(badge).toHaveTextContent('-8.3%');
-      // danger 색상 클래스 확인
-      expect(badge.className).toContain('danger');
+      // red 색상 클래스 확인
+      expect(badge.className).toContain('red');
     });
 
     it('증감률이 0일 때 중립 스타일이 적용되어야 함', () => {
@@ -108,7 +108,7 @@ describe('MetricCard', () => {
       expect(screen.getByText('전주 대비')).toBeInTheDocument();
     });
 
-    it('기본 비교 기간이 "전일 대비"여야 함', () => {
+    it('기본 비교 기간이 "전월 동기 대비"여야 함', () => {
       render(
         <MetricCard
           label="총 매출"
@@ -117,7 +117,7 @@ describe('MetricCard', () => {
         />
       );
 
-      expect(screen.getByText('전일 대비')).toBeInTheDocument();
+      expect(screen.getByText('전월 동기 대비')).toBeInTheDocument();
     });
 
     it('changePercent가 undefined일 때 증감 표시가 없어야 함', () => {
@@ -157,6 +157,7 @@ describe('MetricCard', () => {
           changePercent={5.2}
           changePeriod="전주 대비"
           icon={<DollarSign />}
+          colorTheme="blue"
         />
       );
 
@@ -173,8 +174,9 @@ describe('MetricCard', () => {
           value={3.2}
           format="roas"
           changePercent={-2.1}
-          changePeriod="전일 대비"
+          changePeriod="전월 동기 대비"
           icon={<TrendingUp />}
+          colorTheme="orange"
         />
       );
 

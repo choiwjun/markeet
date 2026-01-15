@@ -1,6 +1,5 @@
 import { HTMLAttributes, forwardRef } from 'react';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
+import { TrendingUp, TrendingDown, Minus, DollarSign, Wallet, BarChart3, MousePointer } from 'lucide-react';
 import { formatNumber, formatCurrency, formatPercent } from '@/lib/utils/format';
 
 // 지표 값 포맷 타입
@@ -8,6 +7,9 @@ export type MetricFormat = 'number' | 'currency' | 'percent' | 'roas';
 
 // 트렌드 방향 타입
 export type TrendDirection = 'up' | 'down' | 'neutral';
+
+// 카드 색상 테마 타입
+export type CardColorTheme = 'blue' | 'purple' | 'orange' | 'green';
 
 interface MetricCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   /** 지표 라벨 */
@@ -24,67 +26,45 @@ interface MetricCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> 
   icon?: React.ReactNode;
   /** 로딩 상태 */
   loading?: boolean;
+  /** 카드 색상 테마 */
+  colorTheme?: CardColorTheme;
 }
 
-// 스타일 상수
-const CARD_STYLES = 'relative overflow-hidden';
+// 색상 테마별 스타일
+const COLOR_THEMES: Record<CardColorTheme, { border: string; iconBg: string; iconColor: string; bgIcon: string }> = {
+  blue: {
+    border: 'hover:border-blue-300',
+    iconBg: 'bg-blue-50 dark:bg-blue-900/30',
+    iconColor: 'text-primary',
+    bgIcon: 'text-blue-500',
+  },
+  purple: {
+    border: 'hover:border-purple-300',
+    iconBg: 'bg-purple-50 dark:bg-purple-900/30',
+    iconColor: 'text-purple-600 dark:text-purple-400',
+    bgIcon: 'text-purple-500',
+  },
+  orange: {
+    border: 'hover:border-orange-300',
+    iconBg: 'bg-orange-50 dark:bg-orange-900/30',
+    iconColor: 'text-orange-600 dark:text-orange-400',
+    bgIcon: 'text-orange-500',
+  },
+  green: {
+    border: 'hover:border-green-300',
+    iconBg: 'bg-green-50 dark:bg-green-900/30',
+    iconColor: 'text-green-600 dark:text-green-400',
+    bgIcon: 'text-green-500',
+  },
+};
 
-const HEADER_STYLES = [
-  'flex items-center justify-between',
-  'mb-3',
-].join(' ');
-
-const LABEL_STYLES = [
-  'text-sm font-medium',
-  'text-slate-500 dark:text-slate-400',
-].join(' ');
-
-const ICON_WRAPPER_STYLES = [
-  'flex items-center justify-center',
-  'w-10 h-10',
-  'rounded-xl',
-  'bg-primary-50 dark:bg-primary-900/20',
-  'text-primary-600 dark:text-primary-400',
-].join(' ');
-
-const VALUE_STYLES = [
-  'text-2xl lg:text-3xl font-bold',
-  'text-slate-900 dark:text-white',
-  'font-mono',
-  'tracking-tight',
-].join(' ');
-
-const CHANGE_WRAPPER_STYLES = [
-  'flex items-center gap-2',
-  'mt-3',
-].join(' ');
-
-const CHANGE_BADGE_BASE_STYLES = [
-  'inline-flex items-center gap-1',
-  'px-2 py-1',
-  'rounded-full',
-  'text-xs font-semibold',
-].join(' ');
-
-const CHANGE_BADGE_UP_STYLES = [
-  'bg-success-50 dark:bg-success-900/20',
-  'text-success-600 dark:text-success-400',
-].join(' ');
-
-const CHANGE_BADGE_DOWN_STYLES = [
-  'bg-danger-50 dark:bg-danger-900/20',
-  'text-danger-600 dark:text-danger-400',
-].join(' ');
-
-const CHANGE_BADGE_NEUTRAL_STYLES = [
-  'bg-slate-100 dark:bg-slate-800',
-  'text-slate-500 dark:text-slate-400',
-].join(' ');
-
-const CHANGE_PERIOD_STYLES = [
-  'text-xs',
-  'text-slate-400 dark:text-slate-500',
-].join(' ');
+// 배경 아이콘 컴포넌트
+const BG_ICONS: Record<CardColorTheme, React.ReactNode> = {
+  blue: <DollarSign className="w-20 h-20" />,
+  purple: <Wallet className="w-20 h-20" />,
+  orange: <BarChart3 className="w-20 h-20" />,
+  green: <MousePointer className="w-20 h-20" />,
+};
 
 /**
  * 값을 포맷 타입에 따라 문자열로 변환
@@ -130,8 +110,7 @@ function TrendIcon({ direction }: { direction: TrendDirection }) {
 
 /**
  * 지표 카드 컴포넌트
- * TASK-505: 숫자 지표를 표시하는 카드 (라벨, 값, 증감 표시)
- * TASK-506: 전일/전주 대비 증감률 표시 (TrendingUp/Down 아이콘)
+ * dashboard.html 디자인 스타일 적용
  */
 export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
   (
@@ -140,9 +119,10 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
       value,
       format = 'number',
       changePercent,
-      changePeriod = '전일 대비',
+      changePeriod = '전월 동기 대비',
       icon,
       loading = false,
+      colorTheme = 'blue',
       className,
       ...props
     },
@@ -150,57 +130,66 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
   ) => {
     const formattedValue = formatValue(value, format);
     const trendDirection = changePercent !== undefined ? getTrendDirection(changePercent) : null;
-
-    // 증감 뱃지 스타일 결정
-    const getChangeBadgeStyles = () => {
-      if (!trendDirection) return CHANGE_BADGE_NEUTRAL_STYLES;
-
-      switch (trendDirection) {
-        case 'up':
-          return CHANGE_BADGE_UP_STYLES;
-        case 'down':
-          return CHANGE_BADGE_DOWN_STYLES;
-        case 'neutral':
-        default:
-          return CHANGE_BADGE_NEUTRAL_STYLES;
-      }
-    };
+    const theme = COLOR_THEMES[colorTheme];
 
     return (
-      <Card
+      <div
         ref={ref}
-        className={`${CARD_STYLES} ${className || ''}`}
-        padding="md"
+        className={`bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-[0_0_0_1px_rgba(0,0,0,0.03),0_2px_8px_rgba(0,0,0,0.04)] flex flex-col justify-between gap-2 group ${theme.border} transition-colors relative overflow-hidden ${className || ''}`}
         {...props}
       >
+        {/* 배경 아이콘 */}
+        <div className={`absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity ${theme.bgIcon}`}>
+          {BG_ICONS[colorTheme]}
+        </div>
+
         {/* 헤더: 라벨 + 아이콘 */}
-        <div className={HEADER_STYLES}>
-          <span className={LABEL_STYLES}>{label}</span>
-          {icon && <div className={ICON_WRAPPER_STYLES}>{icon}</div>}
+        <div className="flex justify-between items-center z-10">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wide">
+            {label}
+          </p>
+          {icon && (
+            <div className={`${theme.iconBg} p-1.5 rounded-md ${theme.iconColor}`}>
+              {icon}
+            </div>
+          )}
         </div>
 
         {/* 값 */}
-        <div className={VALUE_STYLES} data-testid="metric-value">
-          {formattedValue}
-        </div>
+        <div className="z-10 mt-2">
+          <h3
+            className="text-slate-900 dark:text-white text-3xl font-bold tracking-tight font-mono"
+            data-testid="metric-value"
+          >
+            {formattedValue}
+          </h3>
 
-        {/* 증감 표시 */}
-        {changePercent !== undefined && (
-          <div className={CHANGE_WRAPPER_STYLES}>
-            <span
-              className={`${CHANGE_BADGE_BASE_STYLES} ${getChangeBadgeStyles()}`}
-              data-testid="change-badge"
-            >
-              <TrendIcon direction={trendDirection!} />
-              <span>
-                {changePercent > 0 ? '+' : ''}
-                {changePercent.toFixed(1)}%
+          {/* 증감 표시 */}
+          {changePercent !== undefined && (
+            <div className="flex items-center gap-2 mt-2">
+              <div
+                className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-bold ${
+                  trendDirection === 'up'
+                    ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20'
+                    : trendDirection === 'down'
+                    ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20'
+                    : 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800'
+                }`}
+                data-testid="change-badge"
+              >
+                <TrendIcon direction={trendDirection!} />
+                <span>
+                  {changePercent > 0 ? '+' : ''}
+                  {changePercent.toFixed(1)}%
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+                {changePeriod}
               </span>
-            </span>
-            <span className={CHANGE_PERIOD_STYLES}>{changePeriod}</span>
-          </div>
-        )}
-      </Card>
+            </div>
+          )}
+        </div>
+      </div>
     );
   }
 );

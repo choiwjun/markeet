@@ -1,6 +1,6 @@
 'use client';
 
-import { DollarSign, TrendingUp, MousePointer, ShoppingCart } from 'lucide-react';
+import { DollarSign, TrendingUp, MousePointer, ShoppingCart, Sparkles, Calendar, Download, Search } from 'lucide-react';
 import { MetricCard, DateRangeFilter } from '@/components/dashboard';
 import { PlatformBarChart, TrendLineChart } from '@/components/charts';
 import { useDateRange } from '@/hooks/useDateRange';
@@ -13,33 +13,11 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Card } from '@/components/ui/Card';
 
 // 스타일 상수
-const PAGE_HEADER_STYLES = [
-  'flex flex-col sm:flex-row sm:items-center sm:justify-between',
-  'gap-4 mb-6',
-].join(' ');
+const METRIC_GRID_STYLES = 'grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-6';
 
-const PAGE_TITLE_STYLES = [
-  'text-2xl font-bold',
-  'text-slate-900 dark:text-white',
-].join(' ');
+const CHART_GRID_STYLES = 'grid gap-6 grid-cols-1 lg:grid-cols-3';
 
-const METRIC_GRID_STYLES = [
-  'grid gap-4',
-  'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
-  'mb-6',
-].join(' ');
-
-const CHART_GRID_STYLES = [
-  'grid gap-6',
-  'grid-cols-1 lg:grid-cols-2',
-].join(' ');
-
-const SKELETON_CHART_STYLES = [
-  'h-[400px]',
-  'bg-slate-100 dark:bg-slate-800',
-  'rounded-2xl',
-  'animate-pulse',
-].join(' ');
+const SKELETON_CHART_STYLES = 'h-[400px] bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse';
 
 /**
  * 대시보드 메인 페이지
@@ -159,30 +137,25 @@ export default function DashboardPage() {
           changePercent={changes.spendChange}
           changePeriod={changePeriod}
           icon={<DollarSign className="w-5 h-5" />}
+          colorTheme="blue"
         />
         <MetricCard
-          label="총 매출"
+          label="총 매출액"
           value={metrics.totalRevenue}
           format="currency"
           changePercent={changes.revenueChange}
           changePeriod={changePeriod}
           icon={<ShoppingCart className="w-5 h-5" />}
+          colorTheme="purple"
         />
         <MetricCard
-          label="평균 ROAS"
+          label="ROAS (광고 수익률)"
           value={metrics.avgRoas}
           format="roas"
           changePercent={changes.roasChange}
           changePeriod={changePeriod}
           icon={<TrendingUp className="w-5 h-5" />}
-        />
-        <MetricCard
-          label="총 클릭수"
-          value={metrics.totalClicks}
-          format="number"
-          changePercent={changes.clicksChange}
-          changePeriod={changePeriod}
-          icon={<MousePointer className="w-5 h-5" />}
+          colorTheme="orange"
         />
       </div>
     );
@@ -272,24 +245,71 @@ export default function DashboardPage() {
   };
 
   return (
-    <div>
-      {/* 페이지 헤더 */}
-      <div className={PAGE_HEADER_STYLES}>
-        <h1 className={PAGE_TITLE_STYLES}>대시보드</h1>
-        <DateRangeFilter
-          value={selectedOption}
-          onChange={(option) => setOption(option)}
-        />
+    <div className="max-w-[1280px] mx-auto flex flex-col gap-6">
+      {/* AI Insight 배너 */}
+      <div className="w-full bg-gradient-to-r from-slate-900 via-[#1e293b] to-slate-900 text-white rounded-xl shadow-lg p-0.5 relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+        <div className="relative bg-[#0f172a] rounded-[10px] px-5 py-3 flex items-start md:items-center gap-4">
+          <div className="bg-indigo-500/20 p-2 rounded-lg shrink-0">
+            <Sparkles className="w-5 h-5 text-indigo-400" />
+          </div>
+          <div className="flex-1">
+            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
+              <span className="text-indigo-300 font-bold text-sm uppercase tracking-wider">AI Insight</span>
+              <div className="h-1 w-1 rounded-full bg-slate-600 hidden md:block"></div>
+              <p className="text-sm md:text-[15px] font-medium leading-snug text-slate-200">
+                <span className="text-white font-bold">데이터를 분석 중입니다.</span> 플랫폼을 연동하면 AI가 인사이트를 제공합니다.
+              </p>
+            </div>
+          </div>
+          <button className="text-xs text-indigo-300 hover:text-white font-bold underline decoration-indigo-500/50 underline-offset-4 transition-colors shrink-0">
+            자세히 보기
+          </button>
+        </div>
       </div>
+
+      {/* 페이지 헤더 */}
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="flex flex-col gap-1.5 max-w-lg w-full">
+          <h2 className="text-slate-900 dark:text-white text-2xl font-extrabold tracking-tight">대시보드 개요</h2>
+          <div className="relative mt-2 w-full group">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <Search className="w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" />
+            </div>
+            <input
+              className="block w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
+              placeholder='AI에게 질문하기: "지난주 대비 네이버 광고 효율은 어때?"'
+              type="text"
+            />
+            <div className="absolute inset-y-0 right-2 flex items-center">
+              <span className="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">Enter</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm shrink-0 self-end">
+          <DateRangeFilter
+            value={selectedOption}
+            onChange={(option) => setOption(option)}
+          />
+          <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 transition-colors" title="데이터 내보내기">
+            <Download className="w-5 h-5" />
+          </button>
+        </div>
+      </header>
 
       {/* 지표 카드 그리드 */}
       {renderMetricCards()}
 
       {/* 차트 영역 */}
-      <div className={CHART_GRID_STYLES}>
-        {renderPlatformChart()}
-        {renderTrendChart()}
-      </div>
+      <section className={CHART_GRID_STYLES}>
+        <div className="lg:col-span-2">
+          {renderTrendChart()}
+        </div>
+        <div className="lg:col-span-1">
+          {renderPlatformChart()}
+        </div>
+      </section>
     </div>
   );
 }

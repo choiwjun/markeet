@@ -49,7 +49,7 @@ describe('DashboardLayout', () => {
         </DashboardLayout>
       );
 
-      expect(screen.getByText('마케트')).toBeInTheDocument();
+      expect(screen.getByText('MARKEET')).toBeInTheDocument();
     });
 
     it('헤더가 렌더링되어야 함', () => {

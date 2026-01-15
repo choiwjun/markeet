@@ -117,7 +117,13 @@ describe('DashboardPage', () => {
     it('페이지 제목이 렌더링되어야 함', async () => {
       renderWithQueryClient(<DashboardPage />);
 
-      expect(screen.getByText('대시보드')).toBeInTheDocument();
+      expect(screen.getByText('대시보드 개요')).toBeInTheDocument();
+    });
+
+    it('AI Insight 배너가 렌더링되어야 함', async () => {
+      renderWithQueryClient(<DashboardPage />);
+
+      expect(screen.getByText('AI Insight')).toBeInTheDocument();
     });
 
     it('기간 선택 필터가 렌더링되어야 함', async () => {
@@ -148,9 +154,9 @@ describe('DashboardPage', () => {
         expect(screen.getByText('총 광고비')).toBeInTheDocument();
       });
 
-      expect(screen.getByText('총 매출')).toBeInTheDocument();
-      expect(screen.getByText('평균 ROAS')).toBeInTheDocument();
-      expect(screen.getByText('총 클릭수')).toBeInTheDocument();
+      // 변경된 라벨명 확인
+      expect(screen.getByText('총 매출액')).toBeInTheDocument();
+      expect(screen.getByText('ROAS (광고 수익률)')).toBeInTheDocument();
     });
 
     it('플랫폼별 차트가 렌더링되어야 함', async () => {

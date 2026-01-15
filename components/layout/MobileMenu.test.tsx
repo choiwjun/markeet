@@ -22,14 +22,14 @@ describe('MobileMenu', () => {
       const onClose = vi.fn();
       render(<MobileMenu isOpen={true} onClose={onClose} />);
 
-      expect(screen.getByText('마케트')).toBeInTheDocument();
+      expect(screen.getByText('MARKEET')).toBeInTheDocument();
     });
 
     it('isOpen이 false일 때 렌더링되지 않아야 함', () => {
       const onClose = vi.fn();
       render(<MobileMenu isOpen={false} onClose={onClose} />);
 
-      expect(screen.queryByText('마케트')).not.toBeInTheDocument();
+      expect(screen.queryByText('MARKEET')).not.toBeInTheDocument();
     });
 
     it('dialog role이 설정되어야 함', () => {

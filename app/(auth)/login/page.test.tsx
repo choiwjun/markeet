@@ -2,6 +2,13 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// window.location 모킹
+const mockLocation = { href: '' };
+Object.defineProperty(window, 'location', {
+  value: mockLocation,
+  writable: true,
+});
+
 // Next.js hooks 모킹
 const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({
@@ -31,6 +38,7 @@ import LoginPage from './page';
 describe('LoginPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockLocation.href = '';
   });
 
   // 기본 렌더링 테스트
@@ -66,7 +74,7 @@ describe('LoginPage', () => {
       await user.click(submitButton);
 
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/dashboard');
+        expect(mockLocation.href).toBe('/dashboard');
       });
     });
   });
