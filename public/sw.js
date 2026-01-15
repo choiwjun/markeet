@@ -49,6 +49,11 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // chrome-extension, moz-extension 등 브라우저 확장 프로그램 URL 무시
+  if (url.protocol === 'chrome-extension:' || url.protocol === 'moz-extension:') {
+    return;
+  }
+
   // API 요청은 캐싱하지 않음
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
@@ -117,8 +122,8 @@ self.addEventListener('push', (event) => {
   const data = event.data.json();
   const options = {
     body: data.body || '',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/badge-72x72.png',
+    icon: '/icons/icon.svg',
+    badge: '/icons/icon.svg',
     vibrate: [100, 50, 100],
     data: {
       url: data.url || '/dashboard',
