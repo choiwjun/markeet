@@ -8,8 +8,12 @@
 
 import { createAdminClient } from '@/lib/supabase/server';
 import { decryptCredentials } from '@/lib/supabase/vault';
-import { collectGA4Data, type GA4Credentials } from '@/lib/platforms/collectors/ga4';
-import type { PlatformCode, SyncJobStatus, SyncJob, SyncJobInsert, SyncJobUpdate, AdDataInsert } from '@/types/database';
+import {
+  collectPlatformDataByCode,
+  type AnyCredentials,
+  type CollectionResult,
+} from '@/lib/platforms/collectors';
+import type { PlatformCode, SyncJobStatus, SyncJob, SyncJobInsert, SyncJobUpdate } from '@/types/database';
 
 // 동기화 결과 타입
 export interface SyncResult {
@@ -206,84 +210,19 @@ async function collectPlatformData(
   const startDateStr = startDate.toISOString().split('T')[0];
   const endDateStr = endDate.toISOString().split('T')[0];
 
-  // 플랫폼별 데이터 수집
-  let result: SyncResult;
-
-  switch (platform) {
-    case 'ga4':
-      result = await collectGA4PlatformData(
-        credentials as unknown as GA4Credentials,
-        userId,
-        connection.id,
-        startDateStr,
-        endDateStr
-      );
-      break;
-
-    // 다른 플랫폼들은 추후 구현
-    case 'naver':
-      result = await collectNaverData();
-      break;
-    case 'google':
-      result = await collectGoogleData();
-      break;
-    case 'meta':
-      result = await collectMetaData();
-      break;
-    case 'kakao':
-      result = await collectKakaoData();
-      break;
-    case 'coupang':
-      result = await collectCoupangData();
-      break;
-    case 'gmarket':
-      result = await collectGmarketData();
-      break;
-    case 'eleventh':
-      result = await collectEleventhData();
-      break;
-    case 'naver_store':
-      result = await collectNaverStoreData();
-      break;
-    case 'naver_analytics':
-      result = await collectNaverAnalyticsData();
-      break;
-    default:
-      result = {
-        success: false,
-        message: `지원하지 않는 플랫폼: ${platform}`,
-      };
-  }
-
-  // 마지막 동기화 시간 업데이트
-  if (result.success) {
-    await supabase
-      .from('platform_connections')
-      .update({ last_sync_at: new Date().toISOString() } as never)
-      .eq('id', connection.id);
-  }
-
-  return result;
-}
-
-/**
- * GA4 데이터 수집 및 저장
- */
-async function collectGA4PlatformData(
-  credentials: GA4Credentials,
-  userId: string,
-  connectionId: string,
-  startDate: string,
-  endDate: string
-): Promise<SyncResult> {
-  const collectionResult = await collectGA4Data(
-    credentials,
-    userId,
-    connectionId,
-    startDate,
-    endDate
+  // 통합 수집기를 통한 데이터 수집
+  const collectionResult = await collectPlatformDataByCode(
+    platform,
+    credentials as unknown as AnyCredentials,
+    {
+      userId,
+      connectionId: connection.id,
+      startDate: startDateStr,
+      endDate: endDateStr,
+    }
   );
 
+  // 수집 실패 시 반환
   if (!collectionResult.success) {
     return {
       success: false,
@@ -295,8 +234,45 @@ async function collectGA4PlatformData(
 
   // 데이터베이스에 저장
   if (collectionResult.data.length > 0) {
-    const supabase = await createAdminClient();
+    const saveResult = await saveCollectedData(
+      userId,
+      connection.id,
+      startDateStr,
+      endDateStr,
+      collectionResult
+    );
 
+    if (!saveResult.success) {
+      return saveResult;
+    }
+  }
+
+  // 마지막 동기화 시간 업데이트
+  await supabase
+    .from('platform_connections')
+    .update({ last_sync_at: new Date().toISOString() } as never)
+    .eq('id', connection.id);
+
+  return {
+    success: true,
+    message: collectionResult.message,
+    recordCount: collectionResult.recordCount,
+  };
+}
+
+/**
+ * 수집된 데이터를 데이터베이스에 저장
+ */
+async function saveCollectedData(
+  userId: string,
+  connectionId: string,
+  startDate: string,
+  endDate: string,
+  collectionResult: CollectionResult
+): Promise<SyncResult> {
+  const supabase = await createAdminClient();
+
+  try {
     // 기존 데이터 삭제 (같은 기간)
     await supabase
       .from('ad_data')
@@ -312,7 +288,7 @@ async function collectGA4PlatformData(
       .insert(collectionResult.data as never);
 
     if (insertError) {
-      console.error('[SyncData] Failed to insert GA4 data:', insertError);
+      console.error('[SyncData] Failed to insert data:', insertError);
       return {
         success: false,
         message: '데이터 저장에 실패했습니다.',
@@ -320,13 +296,21 @@ async function collectGA4PlatformData(
         error: insertError.message,
       };
     }
-  }
 
-  return {
-    success: true,
-    message: collectionResult.message,
-    recordCount: collectionResult.recordCount,
-  };
+    return {
+      success: true,
+      message: '데이터 저장 완료',
+      recordCount: collectionResult.recordCount,
+    };
+  } catch (error) {
+    console.error('[SyncData] Error saving data:', error);
+    return {
+      success: false,
+      message: '데이터 저장 중 오류가 발생했습니다.',
+      recordCount: 0,
+      error: error instanceof Error ? error.message : '알 수 없는 오류',
+    };
+  }
 }
 
 /**
@@ -392,42 +376,4 @@ export async function getUserSyncJobs(
   }
 
   return (data || []) as SyncJob[];
-}
-
-// 플랫폼별 데이터 수집 함수 스텁 (추후 구현 예정)
-// TODO: 각 플랫폼 API 연동 구현
-async function collectNaverData(): Promise<SyncResult> {
-  return { success: false, message: '네이버 광고 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectGoogleData(): Promise<SyncResult> {
-  return { success: false, message: 'Google Ads API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectMetaData(): Promise<SyncResult> {
-  return { success: false, message: 'Meta 광고 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectKakaoData(): Promise<SyncResult> {
-  return { success: false, message: '카카오모먼트 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectCoupangData(): Promise<SyncResult> {
-  return { success: false, message: '쿠팡 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectGmarketData(): Promise<SyncResult> {
-  return { success: false, message: 'G마켓/옥션 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectEleventhData(): Promise<SyncResult> {
-  return { success: false, message: '11번가 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectNaverStoreData(): Promise<SyncResult> {
-  return { success: false, message: '네이버 스마트스토어 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
-}
-
-async function collectNaverAnalyticsData(): Promise<SyncResult> {
-  return { success: false, message: '네이버 애널리틱스 API 연동이 아직 구현되지 않았습니다.', recordCount: 0 };
 }
