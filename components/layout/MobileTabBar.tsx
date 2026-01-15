@@ -34,7 +34,7 @@ const NAV_ITEMS = [
     query: 'ai=open',
   },
   {
-    href: '/notifications',
+    href: '/settings/notifications',
     label: '알림',
     icon: Bell,
   },
@@ -102,8 +102,11 @@ export function MobileTabBar() {
     if (href === '/reports') {
       return pathname === '/reports' || pathname?.startsWith('/reports/');
     }
+    if (href === '/settings/notifications') {
+      return pathname === '/settings/notifications';
+    }
     if (href === '/settings') {
-      return pathname?.startsWith('/settings');
+      return pathname?.startsWith('/settings') && pathname !== '/settings/notifications';
     }
     return pathname === href;
   };
