@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
-import { Sidebar, Header, MobileMenu } from '@/components/layout';
+import { Sidebar, Header, MobileMenu, MobileTabBar } from '@/components/layout';
 import { SessionExpiredAlert } from '@/components/auth';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -33,6 +33,7 @@ const CONTENT_STYLES = [
   'flex-1',
   'overflow-y-auto',
   'p-4 lg:p-8',
+  'pb-20 lg:pb-8', // 모바일 하단 탭바 공간 확보
   // Grid pattern background
   'bg-[radial-gradient(#e2e8f0_1px,transparent_1px)]',
   'dark:bg-[radial-gradient(#334155_1px,transparent_1px)]',
@@ -83,6 +84,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         isVisible={sessionExpired}
         onClose={clearSessionExpired}
       />
+
+      {/* 모바일 하단 네비게이션 바 */}
+      <MobileTabBar />
     </div>
   );
 }

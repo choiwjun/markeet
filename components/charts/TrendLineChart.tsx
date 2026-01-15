@@ -13,6 +13,7 @@ import {
 import { Card } from '@/components/ui/Card';
 import { ChartTooltip } from './ChartTooltip';
 import { formatCompactNumber } from '@/lib/utils/format';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 
 // 일자별 데이터 타입
 export interface TrendData {
@@ -82,6 +83,7 @@ function yAxisFormatter(value: number): string {
 /**
  * 일자별 추이 라인 차트 컴포넌트
  * TASK-517: Recharts를 사용한 일자별 추이 라인 차트
+ * TASK-1303: 모바일에서 간소화된 차트 표시
  */
 export function TrendLineChart({
   data,
@@ -90,6 +92,20 @@ export function TrendLineChart({
   height = 400,
   dataKeys = ['spend', 'revenue'],
 }: TrendLineChartProps) {
+  const isMobile = useIsMobile();
+
+  // 모바일 최적화 설정
+  const mobileHeight = 250;
+  const chartHeight = isMobile ? mobileHeight : height;
+  const margin = isMobile
+    ? { top: 10, right: 10, left: 0, bottom: 5 }
+    : { top: 20, right: 30, left: 20, bottom: 5 };
+  const yAxisWidth = isMobile ? 50 : 80;
+  const fontSize = isMobile ? 10 : 12;
+  const dotRadius = isMobile ? 2 : 4;
+  const activeDotRadius = isMobile ? 4 : 6;
+  const strokeWidth = isMobile ? 1.5 : 2;
+
   // 데이터가 없는 경우
   if (!data || data.length === 0) {
     return (
@@ -108,15 +124,17 @@ export function TrendLineChart({
     formattedDate: formatDate(item.date),
   }));
 
+  // 모바일에서 데이터 간소화 (7일 이상이면 격일로 표시)
+  const displayData = isMobile && chartData.length > 7
+    ? chartData.filter((_, index) => index % 2 === 0 || index === chartData.length - 1)
+    : chartData;
+
   return (
     <Card>
       {title && <h3 className={TITLE_STYLES}>{title}</h3>}
 
-      <ResponsiveContainer width="100%" height={height}>
-        <LineChart
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
+      <ResponsiveContainer width="100%" height={chartHeight}>
+        <LineChart data={displayData} margin={margin}>
           <CartesianGrid
             strokeDasharray="3 3"
             stroke="#E5E7EB"
@@ -124,17 +142,18 @@ export function TrendLineChart({
           />
           <XAxis
             dataKey="formattedDate"
-            tick={{ fill: '#6B7280', fontSize: 12 }}
+            tick={{ fill: '#6B7280', fontSize }}
             tickLine={false}
             axisLine={{ stroke: '#E5E7EB' }}
-            interval="preserveStartEnd"
+            interval={isMobile ? 'preserveStartEnd' : 'preserveStartEnd'}
+            tickMargin={8}
           />
           <YAxis
-            tick={{ fill: '#6B7280', fontSize: 12 }}
+            tick={{ fill: '#6B7280', fontSize }}
             tickFormatter={yAxisFormatter}
             tickLine={false}
             axisLine={false}
-            width={80}
+            width={yAxisWidth}
           />
           <Tooltip
             content={
@@ -148,7 +167,7 @@ export function TrendLineChart({
                     const date = new Date(originalData.date);
                     return date.toLocaleDateString('ko-KR', {
                       year: 'numeric',
-                      month: 'long',
+                      month: isMobile ? 'short' : 'long',
                       day: 'numeric',
                     });
                   }
@@ -157,13 +176,16 @@ export function TrendLineChart({
               />
             }
           />
-          <Legend
-            wrapperStyle={{
-              paddingTop: '20px',
-            }}
-            iconType="circle"
-            iconSize={8}
-          />
+          {/* 모바일에서는 범례 숨김 */}
+          {!isMobile && (
+            <Legend
+              wrapperStyle={{
+                paddingTop: '20px',
+              }}
+              iconType="circle"
+              iconSize={8}
+            />
+          )}
 
           {dataKeys.includes('spend') && (
             <Line
@@ -171,9 +193,9 @@ export function TrendLineChart({
               dataKey="spend"
               name={DATA_KEY_LABELS.spend}
               stroke={CHART_COLORS.spend}
-              strokeWidth={2}
-              dot={{ fill: CHART_COLORS.spend, strokeWidth: 0, r: 4 }}
-              activeDot={{ r: 6, fill: CHART_COLORS.spend }}
+              strokeWidth={strokeWidth}
+              dot={isMobile ? false : { fill: CHART_COLORS.spend, strokeWidth: 0, r: dotRadius }}
+              activeDot={{ r: activeDotRadius, fill: CHART_COLORS.spend }}
             />
           )}
 
@@ -183,9 +205,9 @@ export function TrendLineChart({
               dataKey="revenue"
               name={DATA_KEY_LABELS.revenue}
               stroke={CHART_COLORS.revenue}
-              strokeWidth={2}
-              dot={{ fill: CHART_COLORS.revenue, strokeWidth: 0, r: 4 }}
-              activeDot={{ r: 6, fill: CHART_COLORS.revenue }}
+              strokeWidth={strokeWidth}
+              dot={isMobile ? false : { fill: CHART_COLORS.revenue, strokeWidth: 0, r: dotRadius }}
+              activeDot={{ r: activeDotRadius, fill: CHART_COLORS.revenue }}
             />
           )}
 
@@ -195,13 +217,37 @@ export function TrendLineChart({
               dataKey="roas"
               name={DATA_KEY_LABELS.roas}
               stroke={CHART_COLORS.roas}
-              strokeWidth={2}
-              dot={{ fill: CHART_COLORS.roas, strokeWidth: 0, r: 4 }}
-              activeDot={{ r: 6, fill: CHART_COLORS.roas }}
+              strokeWidth={strokeWidth}
+              dot={isMobile ? false : { fill: CHART_COLORS.roas, strokeWidth: 0, r: dotRadius }}
+              activeDot={{ r: activeDotRadius, fill: CHART_COLORS.roas }}
             />
           )}
         </LineChart>
       </ResponsiveContainer>
+
+      {/* 모바일용 범례 (차트 아래에 간단히 표시) */}
+      {isMobile && (
+        <div className="flex justify-center gap-4 mt-2 text-xs">
+          {dataKeys.includes('spend') && (
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: CHART_COLORS.spend }} />
+              <span className="text-slate-600 dark:text-slate-400">광고비</span>
+            </div>
+          )}
+          {dataKeys.includes('revenue') && (
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: CHART_COLORS.revenue }} />
+              <span className="text-slate-600 dark:text-slate-400">매출</span>
+            </div>
+          )}
+          {dataKeys.includes('roas') && (
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: CHART_COLORS.roas }} />
+              <span className="text-slate-600 dark:text-slate-400">ROAS</span>
+            </div>
+          )}
+        </div>
+      )}
     </Card>
   );
 }
