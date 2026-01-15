@@ -129,7 +129,7 @@ export function LoginForm({ onSubmit, isLoading = false, error }: LoginFormProps
     setTouched(prev => ({ ...prev, [name]: true }));
     setErrors(prev => ({
       ...prev,
-      [name]: validateField(name, formData[name]),
+      [name]: validateField(name, formData[name] as string),
     }));
   };
 
