@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback, FormEvent } from 'react';
-import { AlertCircle, ExternalLink, Loader2, CheckCircle, RefreshCw } from 'lucide-react';
+import { useState, useCallback, FormEvent, useRef } from 'react';
+import { AlertCircle, ExternalLink, Loader2, CheckCircle, RefreshCw, Upload, FileJson, X } from 'lucide-react';
 import { Modal, ModalFooter } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -76,6 +76,34 @@ const SUCCESS_ALERT_STYLES = [
   'flex items-center gap-3',
 ].join(' ');
 
+const FILE_UPLOAD_STYLES = [
+  'relative',
+  'border-2 border-dashed border-slate-300 dark:border-slate-600',
+  'rounded-lg',
+  'p-6',
+  'transition-colors',
+  'hover:border-primary-400 dark:hover:border-primary-500',
+  'cursor-pointer',
+].join(' ');
+
+const FILE_UPLOAD_ACTIVE_STYLES = [
+  'border-primary-500 dark:border-primary-400',
+  'bg-primary-50 dark:bg-primary-900/20',
+].join(' ');
+
+const FILE_UPLOADED_STYLES = [
+  'flex items-center justify-between',
+  'p-4',
+  'bg-success-50 dark:bg-success-900/20',
+  'border border-success-200 dark:border-success-700',
+  'rounded-lg',
+].join(' ');
+
+const FILE_UPLOAD_ERROR_STYLES = [
+  'border-danger-300 dark:border-danger-600',
+  'bg-danger-50 dark:bg-danger-900/10',
+].join(' ');
+
 export function ApiKeyModal({
   isOpen,
   onClose,
@@ -96,6 +124,103 @@ export function ApiKeyModal({
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [stage, setStage] = useState<ConnectionStage>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [uploadedFileName, setUploadedFileName] = useState<string>('');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // JSON 유효성 검사
+  const validateJson = (jsonString: string): { valid: boolean; error?: string } => {
+    try {
+      const parsed = JSON.parse(jsonString);
+      // 서비스 계정 JSON의 필수 필드 확인
+      if (!parsed.type || !parsed.project_id || !parsed.private_key || !parsed.client_email) {
+        return { valid: false, error: '서비스 계정 JSON 형식이 올바르지 않습니다.' };
+      }
+      return { valid: true };
+    } catch {
+      return { valid: false, error: '서비스 계정 JSON 형식이 올바르지 않습니다.' };
+    }
+  };
+
+  // 파일 읽기 핸들러
+  const handleFileRead = useCallback((file: File, fieldName: string) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      const field = platform.apiKeyFields.find(f => f.name === fieldName);
+
+      // JSON 유효성 검사
+      if (field?.validateJson) {
+        const validation = validateJson(content);
+        if (!validation.valid) {
+          setFormState(prev => ({
+            ...prev,
+            values: { ...prev.values, [fieldName]: '' },
+            errors: { ...prev.errors, [fieldName]: validation.error || '유효하지 않은 JSON입니다.' },
+            touched: { ...prev.touched, [fieldName]: true },
+          }));
+          setUploadedFileName('');
+          return;
+        }
+      }
+
+      setFormState(prev => ({
+        ...prev,
+        values: { ...prev.values, [fieldName]: content },
+        errors: { ...prev.errors, [fieldName]: '' },
+        touched: { ...prev.touched, [fieldName]: true },
+      }));
+      setUploadedFileName(file.name);
+    };
+    reader.readAsText(file);
+  }, [platform.apiKeyFields]);
+
+  // 파일 선택 핸들러
+  const handleFileChange = useCallback((fieldName: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileRead(file, fieldName);
+    }
+  }, [handleFileRead]);
+
+  // 드래그 앤 드롭 핸들러
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((fieldName: string) => (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith('.json')) {
+      handleFileRead(file, fieldName);
+    } else {
+      setFormState(prev => ({
+        ...prev,
+        errors: { ...prev.errors, [fieldName]: 'JSON 파일만 업로드 가능합니다.' },
+        touched: { ...prev.touched, [fieldName]: true },
+      }));
+    }
+  }, [handleFileRead]);
+
+  // 파일 업로드 초기화
+  const handleClearFile = useCallback((fieldName: string) => {
+    setFormState(prev => ({
+      ...prev,
+      values: { ...prev.values, [fieldName]: '' },
+      errors: { ...prev.errors, [fieldName]: '' },
+    }));
+    setUploadedFileName('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, []);
 
   // 개별 필드 유효성 검사 (TASK-406)
   const validateField = (fieldName: string, value: string): string => {
@@ -344,20 +469,97 @@ export function ApiKeyModal({
       <form onSubmit={handleSubmit} className={FORM_STYLES}>
         {platform.apiKeyFields.map(field => (
           <div key={field.name}>
-            <Input
-              type={field.type}
-              label={field.label}
-              placeholder={field.placeholder}
-              value={formState.values[field.name]}
-              onChange={handleChange(field.name)}
-              onBlur={handleBlur(field.name)}
-              error={formState.touched[field.name] ? formState.errors[field.name] : undefined}
-              disabled={isProcessing || stage === 'success'}
-              required={field.required}
-              autoComplete="off"
-            />
-            {field.helpText && (
-              <p className={FIELD_HELP_STYLES}>{field.helpText}</p>
+            {field.type === 'file' ? (
+              // 파일 업로드 필드
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  {field.label}
+                  {field.required && <span className="text-danger-500 ml-1">*</span>}
+                </label>
+
+                {formState.values[field.name] && uploadedFileName ? (
+                  // 파일이 업로드된 상태
+                  <div className={FILE_UPLOADED_STYLES}>
+                    <div className="flex items-center gap-3">
+                      <FileJson className="w-5 h-5 text-success-600 dark:text-success-400" />
+                      <div>
+                        <p className="text-sm font-medium text-slate-900 dark:text-white">{uploadedFileName}</p>
+                        <p className="text-xs text-success-600 dark:text-success-400">JSON 파일 업로드 완료</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleClearFile(field.name)}
+                      disabled={isProcessing || stage === 'success'}
+                      className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded transition-colors"
+                    >
+                      <X className="w-4 h-4 text-slate-500" />
+                    </button>
+                  </div>
+                ) : (
+                  // 파일 업로드 영역
+                  <div
+                    className={`${FILE_UPLOAD_STYLES} ${isDragging ? FILE_UPLOAD_ACTIVE_STYLES : ''} ${
+                      formState.touched[field.name] && formState.errors[field.name] ? FILE_UPLOAD_ERROR_STYLES : ''
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop(field.name)}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept={field.accept || '.json'}
+                      onChange={handleFileChange(field.name)}
+                      disabled={isProcessing || stage === 'success'}
+                      className="hidden"
+                    />
+                    <div className="flex flex-col items-center gap-2 text-center">
+                      <Upload className="w-8 h-8 text-slate-400 dark:text-slate-500" />
+                      <div>
+                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          JSON 파일을 드래그하거나 클릭하여 업로드
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                          {field.placeholder}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 에러 메시지 */}
+                {formState.touched[field.name] && formState.errors[field.name] && (
+                  <p className="mt-2 text-sm text-danger-600 dark:text-danger-400 flex items-center gap-1">
+                    <AlertCircle className="w-4 h-4" />
+                    {formState.errors[field.name]}
+                  </p>
+                )}
+
+                {field.helpText && (
+                  <p className={FIELD_HELP_STYLES}>{field.helpText}</p>
+                )}
+              </div>
+            ) : (
+              // 일반 입력 필드
+              <>
+                <Input
+                  type={field.type === 'textarea' ? 'text' : field.type}
+                  label={field.label}
+                  placeholder={field.placeholder}
+                  value={formState.values[field.name]}
+                  onChange={handleChange(field.name)}
+                  onBlur={handleBlur(field.name)}
+                  error={formState.touched[field.name] ? formState.errors[field.name] : undefined}
+                  disabled={isProcessing || stage === 'success'}
+                  required={field.required}
+                  autoComplete="off"
+                />
+                {field.helpText && (
+                  <p className={FIELD_HELP_STYLES}>{field.helpText}</p>
+                )}
+              </>
             )}
           </div>
         ))}

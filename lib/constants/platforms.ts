@@ -25,9 +25,15 @@ export interface ApiKeyField {
   name: string;
   label: string;
   placeholder: string;
-  type: 'text' | 'password';
+  type: 'text' | 'password' | 'textarea' | 'file';
   required: boolean;
   helpText?: string;
+  /** textarea일 경우 행 수 */
+  rows?: number;
+  /** file일 경우 허용 확장자 */
+  accept?: string;
+  /** JSON 유효성 검사 여부 */
+  validateJson?: boolean;
 }
 
 // 플랫폼 카테고리 정보
@@ -284,7 +290,7 @@ export const PLATFORMS: Record<PlatformCode, PlatformInfo> = {
       {
         name: 'propertyId',
         label: '속성 ID',
-        placeholder: 'GA4 Property ID',
+        placeholder: '예: 123456789',
         type: 'text',
         required: true,
         helpText: '예: 123456789',
@@ -292,10 +298,12 @@ export const PLATFORMS: Record<PlatformCode, PlatformInfo> = {
       {
         name: 'serviceAccountJson',
         label: '서비스 계정 JSON',
-        placeholder: '서비스 계정 JSON 키 파일 내용',
-        type: 'password',
+        placeholder: 'JSON 파일을 업로드하거나 내용을 직접 붙여넣기 하세요',
+        type: 'file',
         required: true,
         helpText: 'Google Cloud Console에서 생성',
+        accept: '.json',
+        validateJson: true,
       },
     ],
     docsUrl: 'https://developers.google.com/analytics/devguides/reporting/data/v1',
