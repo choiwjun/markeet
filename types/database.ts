@@ -259,6 +259,26 @@ export type SyncJobInsert = Omit<SyncJob, 'id' | 'created_at' | 'completed_at' |
 
 export type SyncJobUpdate = Partial<Omit<SyncJob, 'id' | 'created_at' | 'user_id' | 'platform'>>;
 
+// Profile 테이블 타입
+export interface Profile {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  avatar_url: string | null;
+  company_name: string | null;
+  phone: string | null;
+  timezone: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ProfileInsert = Omit<Profile, 'created_at' | 'updated_at'> & {
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type ProfileUpdate = Partial<Omit<Profile, 'id' | 'created_at'>>;
+
 // Supabase Database 타입 (supabase-js와 호환)
 export interface Database {
   public: {
@@ -302,6 +322,11 @@ export interface Database {
         Row: NotificationSettings;
         Insert: NotificationSettingsInsert;
         Update: NotificationSettingsUpdate;
+      };
+      profiles: {
+        Row: Profile;
+        Insert: ProfileInsert;
+        Update: ProfileUpdate;
       };
     };
     Views: Record<string, never>;
