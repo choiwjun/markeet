@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Sidebar, Header, MobileMenu, MobileTabBar } from '@/components/layout';
 import { SessionExpiredAlert } from '@/components/auth';
 import { useAuth } from '@/hooks/useAuth';
@@ -45,8 +46,12 @@ const CONTENT_STYLES = [
  * TASK-501: 사이드바 + 헤더 + 메인 콘텐츠 레이아웃
  */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { sessionExpired, clearSessionExpired } = useAuth();
+
+  // 온보딩 페이지는 자체 레이아웃 사용 (대시보드 레이아웃 적용 안 함)
+  const isOnboardingPage = pathname?.startsWith('/onboarding');
 
   const openMobileMenu = () => {
     setIsMobileMenuOpen(true);
@@ -55,6 +60,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
+
+  // 온보딩 페이지는 children만 렌더링 (자체 레이아웃 사용)
+  if (isOnboardingPage) {
+    return <>{children}</>;
+  }
 
   return (
     <div className={CONTAINER_STYLES}>

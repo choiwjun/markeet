@@ -51,7 +51,7 @@ const LOGO_TEXT_STYLES = [
 ].join(' ');
 
 const MAIN_CONTENT_STYLES = [
-  'pt-10 pb-12',
+  'pt-24 pb-28', // 헤더(h-16) + 여백, 푸터(h-20) + 여백
   'max-w-4xl mx-auto',
   'px-4 sm:px-6 lg:px-8',
 ].join(' ');

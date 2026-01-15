@@ -94,6 +94,11 @@ const TAB_LABEL_STYLES = [
 export function MobileTabBar() {
   const pathname = usePathname();
 
+  // 온보딩 페이지에서는 MobileTabBar 숨김 (자체 푸터가 있음)
+  if (pathname?.startsWith('/onboarding')) {
+    return null;
+  }
+
   // 현재 경로가 활성화된 탭인지 확인
   const isActive = (href: string) => {
     if (href === '/dashboard') {

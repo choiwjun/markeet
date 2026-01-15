@@ -237,6 +237,7 @@ export default function OnboardingPage() {
         </div>
 
         <Button
+          type="button"
           onClick={handleComplete}
           disabled={!canComplete}
           size="lg"
