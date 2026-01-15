@@ -15,7 +15,7 @@ import type {
   PlatformCollector,
 } from './types';
 
-const NAVER_ADS_API_BASE = 'https://api.naver.com';
+const NAVER_ADS_API_BASE = 'https://api.searchad.naver.com';
 
 /**
  * 네이버 검색광고 API 서명 생성

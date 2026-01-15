@@ -14,7 +14,7 @@ import type {
   PlatformCollector,
 } from './types';
 
-const META_API_VERSION = 'v18.0';
+const META_API_VERSION = 'v21.0';
 const META_API_BASE = `https://graph.facebook.com/${META_API_VERSION}`;
 
 /**

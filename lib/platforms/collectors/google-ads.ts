@@ -14,7 +14,7 @@ import type {
   PlatformCollector,
 } from './types';
 
-const GOOGLE_ADS_API_VERSION = 'v15';
+const GOOGLE_ADS_API_VERSION = 'v18';
 const GOOGLE_ADS_API_BASE = `https://googleads.googleapis.com/${GOOGLE_ADS_API_VERSION}`;
 
 /**

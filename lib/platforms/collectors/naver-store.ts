@@ -5,6 +5,7 @@
  * API 문서: https://apicenter.commerce.naver.com/ko/basic/commerce-api
  */
 
+import crypto from 'crypto';
 import type { AdDataInsert } from '@/types/database';
 import type {
   NaverStoreCredentials,
@@ -18,12 +19,9 @@ const NAVER_COMMERCE_API_BASE = 'https://api.commerce.naver.com';
 const NAVER_AUTH_BASE = 'https://nid.naver.com';
 
 /**
- * BCrypt 타임스탬프 서명 생성
+ * HMAC-SHA256 타임스탬프 서명 생성
  */
-function generateBcryptTimestamp(clientId: string, clientSecret: string, timestamp: number): string {
-  // 실제 구현시에는 bcrypt 패키지 사용
-  // 여기서는 HMAC-SHA256으로 대체
-  const crypto = require('crypto');
+function generateTimestampSignature(clientId: string, clientSecret: string, timestamp: number): string {
   const message = `${clientId}_${timestamp}`;
   const hmac = crypto.createHmac('sha256', clientSecret);
   hmac.update(message);
@@ -81,7 +79,7 @@ async function naverCommerceRequest<T>(
   body?: Record<string, unknown>
 ): Promise<T> {
   const timestamp = Date.now();
-  const signature = generateBcryptTimestamp(
+  const signature = generateTimestampSignature(
     credentials.clientId,
     credentials.clientSecret,
     timestamp
