@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, AlertCircle, Clock, Plus } from 'lucide-react';
+import { Check, AlertCircle, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { PlatformIcon } from './PlatformIcon';
 import type { PlatformInfo } from '@/lib/constants/platforms';
@@ -18,33 +18,36 @@ export interface PlatformCardProps {
   disabled?: boolean;
 }
 
-// 스타일 상수
+// 스타일 상수 - dashboard.html 디자인 적용
 const CARD_BASE_STYLES = [
   'relative',
-  'p-4 sm:p-5',
+  'p-6',
   'rounded-xl',
-  'border-2',
+  'border',
   'cursor-pointer',
-  'transition-all duration-200',
+  'transition-all duration-300',
   'group',
+  'overflow-hidden',
 ].join(' ');
 
 const CARD_DEFAULT_STYLES = [
-  'border-slate-200 dark:border-slate-700',
+  'border-slate-200 dark:border-slate-800',
   'bg-white dark:bg-slate-800',
-  'hover:border-primary-300 dark:hover:border-primary-600',
-  'hover:shadow-md',
+  'shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)]',
+  'hover:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)]',
+  'hover:-translate-y-0.5',
 ].join(' ');
 
 const CARD_SELECTED_STYLES = [
   'border-primary-500 dark:border-primary-400',
   'bg-primary-50/50 dark:bg-primary-900/20',
-  'shadow-md',
+  'shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)]',
 ].join(' ');
 
 const CARD_CONNECTED_STYLES = [
   'border-success-300 dark:border-success-600',
   'bg-success-50/30 dark:bg-success-900/10',
+  'shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)]',
 ].join(' ');
 
 const CARD_DISABLED_STYLES = [
@@ -52,33 +55,44 @@ const CARD_DISABLED_STYLES = [
   'bg-slate-50 dark:bg-slate-800/50',
   'opacity-60',
   'cursor-not-allowed',
+  'shadow-none',
 ].join(' ');
 
-const CHECK_ICON_STYLES = [
-  'absolute top-3 right-3',
-  'w-6 h-6',
-  'rounded-full',
-  'flex items-center justify-center',
-  'transition-all duration-200',
-].join(' ');
+const CONTENT_WRAPPER_STYLES = 'flex items-start justify-between';
 
-const CONTENT_WRAPPER_STYLES = 'flex items-start gap-4';
+const ICON_TEXT_WRAPPER_STYLES = 'flex items-center gap-4';
 
 const TEXT_WRAPPER_STYLES = 'flex-1 min-w-0';
 
 const NAME_STYLES = [
-  'font-semibold',
+  'font-bold',
   'text-slate-900 dark:text-white',
-  'truncate',
 ].join(' ');
 
 const DESCRIPTION_STYLES = [
-  'mt-1 text-sm',
+  'text-xs',
   'text-slate-500 dark:text-slate-400',
-  'line-clamp-2',
 ].join(' ');
 
 const STATUS_WRAPPER_STYLES = 'mt-3 flex items-center gap-2';
+
+const CONNECT_BUTTON_STYLES = [
+  'text-xs font-bold text-primary',
+  'px-3 py-1.5 rounded-full',
+  'border border-blue-100 dark:border-blue-900/50',
+  'bg-blue-50 dark:bg-blue-900/20',
+  'hover:bg-blue-100 dark:hover:bg-blue-900/40',
+  'transition-colors',
+  'whitespace-nowrap',
+].join(' ');
+
+const CONNECTED_BUTTON_STYLES = [
+  'text-xs font-bold text-success-600 dark:text-success-400',
+  'px-3 py-1.5 rounded-full',
+  'border border-success-100 dark:border-success-900/50',
+  'bg-success-50 dark:bg-success-900/20',
+  'whitespace-nowrap',
+].join(' ');
 
 // 상태 아이콘 컴포넌트
 function StatusIcon({ status }: { status: PlatformStatus }) {
@@ -117,17 +131,6 @@ export function PlatformCard({
     return `${CARD_BASE_STYLES} ${CARD_DEFAULT_STYLES}`;
   };
 
-  // 체크 아이콘 스타일
-  const getCheckIconStyles = () => {
-    if (isConnected && status === 'active') {
-      return `${CHECK_ICON_STYLES} bg-success-500 text-white`;
-    }
-    if (isSelected) {
-      return `${CHECK_ICON_STYLES} bg-primary-500 text-white`;
-    }
-    return `${CHECK_ICON_STYLES} bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 opacity-0 group-hover:opacity-100`;
-  };
-
   const handleClick = () => {
     if (!disabled && onClick) {
       onClick();
@@ -152,44 +155,44 @@ export function PlatformCard({
       aria-disabled={disabled}
       data-testid={`platform-card-${platform.code}`}
     >
-      {/* 체크/연동 아이콘 */}
-      <div className={getCheckIconStyles()}>
+      {/* 컨텐츠 - dashboard.html 스타일 */}
+      <div className={CONTENT_WRAPPER_STYLES}>
+        <div className={ICON_TEXT_WRAPPER_STYLES}>
+          <PlatformIcon
+            iconName={platform.iconName}
+            color={platform.color}
+            size="lg"
+          />
+          <div className={TEXT_WRAPPER_STYLES}>
+            <h3 className={NAME_STYLES}>{platform.name}</h3>
+            <p className={DESCRIPTION_STYLES}>{platform.description}</p>
+          </div>
+        </div>
+
+        {/* 연동 버튼 */}
         {isConnected && status === 'active' ? (
-          <Check className="w-4 h-4" />
-        ) : isSelected ? (
-          <Check className="w-4 h-4" />
+          <span className={CONNECTED_BUTTON_STYLES}>
+            <Check className="w-3 h-3 inline mr-1" />
+            연동됨
+          </span>
         ) : (
-          <Plus className="w-4 h-4" />
+          <span className={CONNECT_BUTTON_STYLES}>연동하기</span>
         )}
       </div>
 
-      {/* 컨텐츠 */}
-      <div className={CONTENT_WRAPPER_STYLES}>
-        <PlatformIcon
-          iconName={platform.iconName}
-          color={platform.color}
-          size="md"
-        />
-
-        <div className={TEXT_WRAPPER_STYLES}>
-          <h3 className={NAME_STYLES}>{platform.name}</h3>
-          <p className={DESCRIPTION_STYLES}>{platform.description}</p>
-
-          {/* 연동 상태 뱃지 (TASK-411) */}
-          {isConnected && status && (
-            <div className={STATUS_WRAPPER_STYLES}>
-              <Badge
-                variant={PLATFORM_STATUS_BADGE_VARIANT[status]}
-                size="sm"
-                dot
-              >
-                <StatusIcon status={status} />
-                {PLATFORM_STATUS_LABELS[status]}
-              </Badge>
-            </div>
-          )}
+      {/* 에러/만료 상태 뱃지 (TASK-411) */}
+      {isConnected && status && status !== 'active' && (
+        <div className={STATUS_WRAPPER_STYLES}>
+          <Badge
+            variant={PLATFORM_STATUS_BADGE_VARIANT[status]}
+            size="sm"
+            dot
+          >
+            <StatusIcon status={status} />
+            {PLATFORM_STATUS_LABELS[status]}
+          </Badge>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -22,12 +22,12 @@ interface ConnectionState {
 }
 
 // 스타일 상수
-const HEADER_WRAPPER_STYLES = 'text-center mb-6';
+const HEADER_WRAPPER_STYLES = 'text-center mb-16';
 
 const TITLE_STYLES = [
-  'text-2xl sm:text-3xl font-bold',
+  'text-4xl font-extrabold tracking-tight',
   'text-slate-900 dark:text-white',
-  'mb-3',
+  'mb-4',
 ].join(' ');
 
 const SUBTITLE_STYLES = [
@@ -35,50 +35,57 @@ const SUBTITLE_STYLES = [
   'max-w-xl mx-auto',
 ].join(' ');
 
-const CATEGORY_WRAPPER_STYLES = 'mb-10';
+const CATEGORY_WRAPPER_STYLES = 'mb-12';
 
 const CATEGORY_HEADER_STYLES = [
   'flex items-center gap-2',
-  'mb-4',
+  'mb-6',
 ].join(' ');
 
 const CATEGORY_TITLE_STYLES = [
-  'text-lg font-semibold',
-  'text-slate-800 dark:text-slate-200',
+  'text-xl font-extrabold',
+  'text-slate-900 dark:text-white',
 ].join(' ');
 
 const CATEGORY_DESC_STYLES = [
-  'text-sm text-slate-500 dark:text-slate-400',
+  'text-xs text-slate-400 font-medium',
 ].join(' ');
 
 const GRID_STYLES = [
   'grid',
-  'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
-  'gap-4',
+  'grid-cols-1 md:grid-cols-3',
+  'gap-6',
 ].join(' ');
 
 const FOOTER_STYLES = [
   'fixed bottom-0 left-0 right-0',
-  'bg-white/80 dark:bg-slate-900/80',
+  'h-20',
+  'bg-white/90 dark:bg-slate-900/90',
   'backdrop-blur-md',
-  'border-t border-slate-200 dark:border-slate-700',
-  'py-4 px-4',
-].join(' ');
-
-const FOOTER_CONTENT_STYLES = [
-  'max-w-4xl mx-auto',
+  'border-t border-slate-200 dark:border-slate-800',
   'flex items-center justify-between',
+  'px-12',
+  'z-20',
 ].join(' ');
 
 const CONNECTION_COUNT_STYLES = [
-  'text-sm',
-  'text-slate-600 dark:text-slate-400',
+  'flex items-center gap-3',
+].join(' ');
+
+const CONNECTION_DOT_STYLES = [
+  'w-2 h-2 rounded-full',
+  'animate-pulse',
+].join(' ');
+
+const CONNECTION_TEXT_STYLES = [
+  'text-sm font-bold',
+  'text-slate-500 dark:text-slate-400',
 ].join(' ');
 
 const HINT_WRAPPER_STYLES = [
-  'flex items-center gap-2',
-  'text-sm text-slate-500 dark:text-slate-400',
-  'mb-8',
+  'flex items-center justify-center gap-2',
+  'text-sm font-bold text-primary dark:text-blue-400',
+  'mt-8',
 ].join(' ');
 
 export default function OnboardingPage() {
@@ -176,14 +183,14 @@ export default function OnboardingPage() {
         </h1>
         <p className={SUBTITLE_STYLES}>
           광고 및 판매 데이터를 통합 관리하기 위해 사용하는 플랫폼을 연동해주세요.
+          <br />
           최소 1개 이상의 플랫폼 연동이 필요합니다.
         </p>
-      </div>
-
-      {/* 힌트 */}
-      <div className={HINT_WRAPPER_STYLES}>
-        <Sparkles className="w-4 h-4 text-primary-500" />
-        <span>플랫폼 카드를 클릭하여 API 키를 입력하세요</span>
+        {/* 힌트 */}
+        <div className={HINT_WRAPPER_STYLES}>
+          <Sparkles className="w-4 h-4" />
+          <span>플랫폼 카드를 클릭하여 API 키를 입력하세요</span>
+        </div>
       </div>
 
       {/* 카테고리별 플랫폼 목록 */}
@@ -211,31 +218,38 @@ export default function OnboardingPage() {
         </div>
       ))}
 
-      {/* 하단 고정 버튼 */}
-      <div className={FOOTER_STYLES}>
-        <div className={FOOTER_CONTENT_STYLES}>
-          <div className={CONNECTION_COUNT_STYLES}>
-            {activeConnectionCount > 0 ? (
-              <span>
-                <strong className="text-primary-600 dark:text-primary-400">
-                  {activeConnectionCount}개
-                </strong>
-                의 플랫폼이 연동되었습니다
-              </span>
-            ) : (
-              <span>아직 연동된 플랫폼이 없습니다</span>
-            )}
-          </div>
-
-          <Button
-            onClick={handleComplete}
-            disabled={!canComplete}
-            rightIcon={<ChevronRight className="w-4 h-4" />}
-          >
-            {canComplete ? '대시보드로 이동' : '최소 1개 플랫폼 연동 필요'}
-          </Button>
+      {/* 하단 고정 푸터 - dashboard.html 스타일 */}
+      <footer className={FOOTER_STYLES}>
+        <div className={CONNECTION_COUNT_STYLES}>
+          <span
+            className={`${CONNECTION_DOT_STYLES} ${
+              activeConnectionCount > 0
+                ? 'bg-success-500'
+                : 'bg-slate-300 dark:bg-slate-600'
+            }`}
+          />
+          <p className={CONNECTION_TEXT_STYLES}>
+            {activeConnectionCount > 0
+              ? `${activeConnectionCount}개의 플랫폼이 연동되었습니다`
+              : '아직 연동된 플랫폼이 없습니다'
+            }
+          </p>
         </div>
-      </div>
+
+        <Button
+          onClick={handleComplete}
+          disabled={!canComplete}
+          size="lg"
+          className={`font-extrabold px-8 py-3 rounded-full ${
+            !canComplete
+              ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
+              : ''
+          }`}
+          rightIcon={<ChevronRight className="w-4 h-4" />}
+        >
+          {canComplete ? '대시보드로 이동' : '최소 1개 플랫폼 연동 필요'}
+        </Button>
+      </footer>
 
       {/* API 키 입력 모달 */}
       {selectedPlatform && (

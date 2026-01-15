@@ -14,6 +14,10 @@ const CONTAINER_STYLES = [
   'min-h-screen',
   'bg-gradient-to-b from-slate-50 to-white',
   'dark:from-slate-900 dark:to-slate-800',
+  // Grid pattern background - dashboard.html 스타일
+  'bg-[radial-gradient(#e2e8f0_1px,transparent_1px)]',
+  'dark:bg-[radial-gradient(#334155_1px,transparent_1px)]',
+  '[background-size:24px_24px]',
 ].join(' ');
 
 const HEADER_STYLES = [
