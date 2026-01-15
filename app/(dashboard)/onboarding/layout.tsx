@@ -12,8 +12,7 @@ interface OnboardingLayoutProps {
 // 스타일 상수
 const CONTAINER_STYLES = [
   'min-h-screen',
-  'bg-gradient-to-b from-slate-50 to-white',
-  'dark:from-slate-900 dark:to-slate-800',
+  'bg-white dark:bg-slate-900',
   // Grid pattern background - dashboard.html 스타일
   'bg-[radial-gradient(#e2e8f0_1px,transparent_1px)]',
   'dark:bg-[radial-gradient(#334155_1px,transparent_1px)]',
@@ -52,7 +51,7 @@ const LOGO_TEXT_STYLES = [
 ].join(' ');
 
 const MAIN_CONTENT_STYLES = [
-  'pt-20 pb-12',
+  'pt-10 pb-12',
   'max-w-4xl mx-auto',
   'px-4 sm:px-6 lg:px-8',
 ].join(' ');
