@@ -2,384 +2,293 @@
 <html class="light" lang="ko"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>마케트 고도화 대시보드</title>
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&amp;family=Roboto+Mono:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#2452eb",
-                        "primary-dark": "#1a3eba",
-                        "accent": "#6366f1",
-                        "background-light": "#f8fafc",
-                        "background-dark": "#0f172a",
-                    },
-                    fontFamily: {
-                        "sans": ["Nanum Gothic", "sans-serif"],
-                        "mono": ["Roboto Mono", "monospace"],
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.5rem", 
-                        "lg": "0.75rem", 
-                        "xl": "1rem", 
-                        "2xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                    boxShadow: {
-                        "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
-                        "card": "0 0 0 1px rgba(0,0,0,0.03), 0 2px 8px rgba(0,0,0,0.04)",
-                    }
-                },
+<title>마케트(MARKEET) - 플랫폼 연동</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2563eb", // Markeeet Brand Blue
+              "background-light": "#f8fafc",
+              "background-dark": "#0f172a",
+              "sidebar-light": "#ffffff",
+              "sidebar-dark": "#1e293b",
+              "card-light": "#ffffff",
+              "card-dark": "#1e293b"
             },
-        }
+            fontFamily: {
+              display: ["'Nanum Gothic'", "sans-serif"],
+              sans: ["'Nanum Gothic'", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "12px",
+              "xl": "16px",
+            },
+            letterSpacing: {
+              tightest: "-0.02em",
+            },
+            lineHeight: {
+              relaxed: "1.7",
+            }
+          },
+        },
+      };
     </script>
 <style>
-        body {letter-spacing: -0.025em; 
-            line-height: 1.6;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .material-symbols-outlined.fill {
-            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }.chart-point {
-            transform-box: fill-box;
-            transform-origin: center;
-            transition: all 0.2s ease;
-        }
-        .chart-point:hover {
-            r: 8;
-            stroke-width: 4px;
-            filter: drop-shadow(0 4px 6px rgba(36, 82, 235, 0.3));
-        }
-        .number-font {
-            font-family: 'Roboto Mono', monospace;
-            letter-spacing: -0.05em;
-        }
+      body {
+        font-family: 'Nanum Gothic', sans-serif;
+        letter-spacing: -0.02em;
+        line-height: 1.7;
+      }
+      .grid-bg {
+        background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+        background-size: 24px 24px;
+      }
+      .dark .grid-bg {
+        background-image: radial-gradient(#334155 0.5px, transparent 0.5px);
+      }
+      .soft-shadow {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      }
+      .card-hover:hover {
+        border-color: #2563eb;
+        transform: translateY(-2px);
+        transition: all 0.2s ease-in-out;
+      }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-sans h-screen flex overflow-hidden selection:bg-primary/20">
-<aside class="w-[260px] bg-white dark:bg-[#111827] border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 h-full z-20 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.02)]">
-<div class="flex flex-col gap-6 p-5 h-full">
-<div class="flex items-center gap-3 px-1 py-1">
-<div class="bg-gradient-to-br from-primary to-accent rounded-xl size-9 flex items-center justify-center shadow-lg shadow-primary/25">
-<span class="material-symbols-outlined text-white text-[20px]">insights</span>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 transition-colors duration-300">
+<div class="flex min-h-screen">
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-sidebar-light dark:bg-sidebar-dark fixed h-full z-20">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-10">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-icons-round text-lg">insights</span>
 </div>
-<div class="flex flex-col justify-center">
-<h1 class="text-slate-900 dark:text-white text-lg font-extrabold leading-none tracking-tight">MARKEET</h1>
-<p class="text-slate-500 dark:text-slate-400 text-[11px] font-bold mt-0.5">AI Marketing Console</p>
+<div>
+<h1 class="font-extrabold text-xl tracking-tighter text-slate-900 dark:text-white leading-none">MARKEET</h1>
+<p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">AI Marketing Console</p>
 </div>
 </div>
-<nav class="flex flex-col gap-1.5 flex-1 mt-2">
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/5 text-primary dark:bg-primary/20 dark:text-blue-300 font-bold transition-all shadow-sm ring-1 ring-primary/10 dark:ring-primary/30" href="#">
-<span class="material-symbols-outlined fill text-[20px]">dashboard</span>
-<span class="text-[14px]">대시보드</span>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-icons-round text-[20px] group-hover:text-primary">dashboard</span>
+<span class="font-bold">대시보드</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors group font-medium" href="#">
-<span class="material-symbols-outlined group-hover:scale-105 transition-transform text-[20px]">description</span>
-<span class="text-[14px]">리포트</span>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-icons-round text-[20px] group-hover:text-primary">description</span>
+<span class="font-bold">리포트</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors group font-medium" href="#">
-<span class="material-symbols-outlined group-hover:scale-105 transition-transform text-[20px]">layers</span>
-<span class="text-[14px]">플랫폼 연동</span>
+<a class="flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/30 text-primary rounded-lg transition-colors font-bold" href="#">
+<span class="material-icons-round text-[20px]">hub</span>
+<span>플랫폼 연동</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors group font-medium" href="#">
-<span class="material-symbols-outlined group-hover:scale-105 transition-transform text-[20px]">settings</span>
-<span class="text-[14px]">설정</span>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-icons-round text-[20px] group-hover:text-primary">settings</span>
+<span class="font-bold">설정</span>
 </a>
 </nav>
-<div class="pt-4 border-t border-slate-100 dark:border-slate-800">
-<a class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors" href="#">
-<div class="relative">
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-9 border border-slate-200 dark:border-slate-700 shadow-sm" data-alt="Portrait of a female user" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAdoAab464nxxNcSBzmQH188-vzBoMGokY-VxTagSophg_KEJywgEAHQNTxeV-F_PA4pdlNapIogM_FMzbWpTy1WgkWV1CBSkTOYuacP5x_QMK-8HIdtIRZJksunuBpg56olLefnwHVqJgKTLaZyCpWfrbNEq50v6gXdOGw_SSZMQx2YXjqU8orV7CL5OYzuB2W2RZMxggAIJzW1B2GmCv1NV1DYYyLtAz1hHf_zONQRR9uZntENuhLbz4sbit3Cn4yQdZ0f2lZwpG5");'></div>
-<div class="absolute bottom-0 right-0 size-2.5 bg-green-500 rounded-full border-2 border-white dark:border-slate-800"></div>
 </div>
-<div class="flex flex-col">
-<p class="text-slate-900 dark:text-white text-[13px] font-bold">김사라</p>
-<p class="text-slate-400 dark:text-slate-500 text-[11px] truncate max-w-[100px]">Senior Marketer</p>
+<div class="absolute bottom-0 w-full p-6 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+<span class="material-icons-round text-slate-500">person</span>
 </div>
-</a>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">사용자</p>
+<p class="text-xs text-slate-500">마케트 사용자</p>
+</div>
 </div>
 </div>
 </aside>
-<main class="flex-1 h-full overflow-y-auto relative scroll-smooth bg-[#f8fafc] dark:bg-[#0f172a]">
-<div class="max-w-[1280px] mx-auto p-6 md:p-8 flex flex-col gap-6 pb-24">
-<div class="w-full bg-gradient-to-r from-slate-900 via-[#1e293b] to-slate-900 text-white rounded-xl shadow-lg p-0.5 relative overflow-hidden group">
-<div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-<div class="relative bg-[#0f172a] rounded-[10px] px-5 py-3 flex items-start md:items-center gap-4">
-<div class="bg-indigo-500/20 p-2 rounded-lg shrink-0">
-<span class="material-symbols-outlined text-indigo-400">auto_awesome</span>
-</div>
-<div class="flex-1">
-<div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
-<span class="text-indigo-300 font-bold text-sm uppercase tracking-wider">AI Insight</span>
-<div class="h-1 w-1 rounded-full bg-slate-600 hidden md:block"></div>
-<p class="text-sm md:text-[15px] font-medium leading-snug text-slate-200">
-<span class="text-white font-bold">어제 전체 ROAS가 전주 대비 12% 상승했습니다.</span> 쿠팡 광고의 전환율 최적화가 주효했습니다.
-                        </p>
-</div>
-</div>
-<button class="text-xs text-indigo-300 hover:text-white font-bold underline decoration-indigo-500/50 underline-offset-4 transition-colors shrink-0">
-                    리포트 자세히 보기
-                </button>
-</div>
-</div>
-<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mt-2">
-<div class="flex flex-col gap-1.5 max-w-lg w-full">
-<h2 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-tight">대시보드 개요</h2>
-<div class="relative mt-2 w-full group">
-<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">search_spark</span>
-</div>
-<input class="block w-full pl-11 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm" placeholder='AI에게 질문하기: "지난주 대비 네이버 광고 효율은 어때?"' type="text"/>
-<div class="absolute inset-y-0 right-2 flex items-center">
-<span class="text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">Enter</span>
-</div>
-</div>
-</div>
-<div class="flex items-center gap-2 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm shrink-0 self-end">
-<button class="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-sm border border-slate-200 dark:border-slate-600 flex items-center gap-2 hover:bg-white hover:text-primary transition-all">
-<span class="material-symbols-outlined text-[16px]">calendar_today</span>
-<span>10월 1일 - 10월 31일</span>
+<main class="ml-64 flex-1 pb-32">
+<header class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 flex items-center justify-between px-8">
+<div></div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+<span class="material-icons-round">notifications</span>
 </button>
-<div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-<button class="size-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 text-slate-500 transition-colors tooltip" title="데이터 내보내기">
-<span class="material-symbols-outlined text-[20px]">download</span>
-</button>
+<div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700">
+<div class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 flex items-center justify-center text-[10px] font-bold">WJ</div>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300">wj94128871</span>
+<span class="material-icons-round text-sm text-slate-400">expand_more</span>
+</div>
 </div>
 </header>
-<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-card flex flex-col justify-between gap-2 group hover:border-blue-300 transition-colors relative overflow-hidden">
-<div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-<span class="material-symbols-outlined text-[80px] text-blue-500">payments</span>
+<div class="p-12 max-w-6xl mx-auto grid-bg min-h-full">
+<div class="text-center mb-16">
+<h2 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">플랫폼을 연동하세요</h2>
+<p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+                        광고 및 판매 데이터를 통합 관리하기 위해 사용하는 플랫폼을 연동해주세요.<br/>
+                        최소 1개 이상의 플랫폼 연동이 필요합니다.
+                    </p>
+<div class="mt-8 flex items-center justify-center gap-2 text-primary font-bold text-sm">
+<span class="material-icons-round text-sm">auto_awesome</span>
+                        플랫폼 카드를 클릭하여 API 키를 입력하세요
+                    </div>
 </div>
-<div class="flex justify-between items-center z-10">
-<p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wide">총 광고비</p>
-<div class="bg-blue-50 dark:bg-blue-900/30 p-1.5 rounded-md text-primary">
-<span class="material-symbols-outlined text-[20px]">payments</span>
+<section class="mb-12">
+<div class="flex items-center gap-2 mb-6">
+<h3 class="text-xl font-extrabold text-slate-900 dark:text-white">광고 플랫폼</h3>
+<span class="text-xs text-slate-400 font-medium">광고 성과 데이터를 수집합니다.</span>
 </div>
-</div>
-<div class="z-10 mt-2">
-<h3 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight number-font">₩12,450,000</h3>
-<div class="flex items-center gap-2 mt-2">
-<div class="flex items-center gap-0.5 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded text-[11px] font-bold">
-<span class="material-symbols-outlined text-[14px]">trending_up</span>
-<span>5.2%</span>
-</div>
-<span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">전월 동기 대비</span>
-</div>
-</div>
-</div>
-<div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-card flex flex-col justify-between gap-2 group hover:border-purple-300 transition-colors relative overflow-hidden">
-<div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-<span class="material-symbols-outlined text-[80px] text-purple-500">account_balance_wallet</span>
-</div>
-<div class="flex justify-between items-center z-10">
-<p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wide">총 매출액</p>
-<div class="bg-purple-50 dark:bg-purple-900/30 p-1.5 rounded-md text-purple-600 dark:text-purple-400">
-<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center text-white font-black text-xl">N</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">네이버 광고</h4>
+<p class="text-xs text-slate-500">네이버 검색광고 성과 데이터</p>
 </div>
 </div>
-<div class="z-10 mt-2">
-<h3 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight number-font">₩42,100,000</h3>
-<div class="flex items-center gap-2 mt-2">
-<div class="flex items-center gap-0.5 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded text-[11px] font-bold">
-<span class="material-symbols-outlined text-[14px]">trending_up</span>
-<span>12.8%</span>
-</div>
-<span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">전월 동기 대비</span>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
 </div>
 </div>
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-white border border-slate-100 rounded-lg flex items-center justify-center shadow-sm">
+<img alt="Google Ads Logo" class="w-8 h-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5djVY2BijYeQgkw_UQ9KRvVmD2dDaatcnjC_Kf0uLEH85iJoITF9oZaBYzZpjTvhug_5ocCOzaV6XvzUYtW8YTftzJ09gON2T1pVM8X0hoRj7pNMLEV5XdxT1BwpvoJ_ptoPyELB59CECMYBqZyBPqw1Cl7MDRfbpxSEQM16nLm5_HIXJZw0AA9G8OKPLS-KXX_FjuBaCGbPSCOoaPPPSRHwDLcvGN6KUU5CaQWyM51EKkwDPZ88lKjETujaBmsrVGRYs0LP8XI93"/>
 </div>
-<div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-card flex flex-col justify-between gap-2 group hover:border-orange-300 transition-colors relative overflow-hidden">
-<div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-<span class="material-symbols-outlined text-[80px] text-orange-500">monitoring</span>
-</div>
-<div class="flex justify-between items-center z-10">
-<p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wide">ROAS (광고 수익률)</p>
-<div class="bg-orange-50 dark:bg-orange-900/30 p-1.5 rounded-md text-orange-600 dark:text-orange-400">
-<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Google Ads</h4>
+<p class="text-xs text-slate-500">Google 광고 성과 데이터</p>
 </div>
 </div>
-<div class="z-10 mt-2">
-<h3 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight number-font">338%</h3>
-<div class="flex items-center gap-2 mt-2">
-<div class="flex items-center gap-0.5 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded text-[11px] font-bold">
-<span class="material-symbols-outlined text-[14px]">trending_up</span>
-<span>3.2%p</span>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
 </div>
-<span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">전월 동기 대비</span>
+</div>
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-[#0668E1] rounded-lg flex items-center justify-center text-white">
+<span class="material-icons-round text-2xl">facebook</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Meta 광고</h4>
+<p class="text-xs text-slate-500">Facebook/Instagram 성과</p>
+</div>
+</div>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
+</div>
+</div>
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-[#FEE500] rounded-lg flex items-center justify-center text-[#3C1E1E]">
+<span class="material-icons-round">chat_bubble</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">카카오모먼트</h4>
+<p class="text-xs text-slate-500">카카오 광고 성과 데이터</p>
+</div>
+</div>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
 </div>
 </div>
 </div>
 </section>
-<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-<div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-card p-6 flex flex-col gap-6">
-<div class="flex justify-between items-center">
-<div class="flex flex-col gap-1">
-<h3 class="text-slate-900 dark:text-white text-lg font-bold">일별 성과 추이</h3>
-<div class="flex items-center gap-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
-<div class="flex items-center gap-1.5">
-<span class="size-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(36,82,235,0.5)]"></span> 
-                                광고비
-                            </div>
-<div class="flex items-center gap-1.5">
-<span class="size-2.5 rounded-full bg-slate-300 dark:bg-slate-600 border border-slate-400 dark:border-slate-500"></span> 
-                                매출 (목표)
-                            </div>
+<section class="mb-12">
+<div class="flex items-center gap-2 mb-6">
+<h3 class="text-xl font-extrabold text-slate-900 dark:text-white">커머스 플랫폼</h3>
+<span class="text-xs text-slate-400 font-medium">판매 및 매출 데이터를 수집합니다.</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-rose-50 rounded-lg flex items-center justify-center text-rose-500 border border-rose-100">
+<span class="material-icons-round">shopping_cart</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">쿠팡 로켓그로스</h4>
+<p class="text-xs text-slate-500">쿠팡 판매 및 광고 데이터</p>
 </div>
 </div>
-<select class="bg-slate-50 dark:bg-slate-700 border-none rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 py-2 pl-3 pr-8 focus:ring-2 focus:ring-primary/20 cursor-pointer hover:bg-slate-100 transition-colors">
-<option>최근 30일</option>
-<option>최근 7일</option>
-<option>지난 분기</option>
-</select>
-</div>
-<div class="relative w-full h-72 mt-2">
-<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 800 200">
-<g class="opacity-30">
-<line class="dark:stroke-slate-700" stroke="#e2e8f0" stroke-width="1" x1="0" x2="800" y1="0" y2="0"></line>
-<line class="dark:stroke-slate-700" stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="800" y1="50" y2="50"></line>
-<line class="dark:stroke-slate-700" stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
-<line class="dark:stroke-slate-700" stroke="#e2e8f0" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="800" y1="150" y2="150"></line>
-<line class="dark:stroke-slate-700" stroke="#94a3b8" stroke-width="1" x1="0" x2="800" y1="200" y2="200"></line>
-</g>
-<defs>
-<linearGradient id="gradientArea" x1="0" x2="0" y1="0" y2="1">
-<stop offset="0%" stop-color="#2452eb" stop-opacity="0.3"></stop>
-<stop offset="50%" stop-color="#2452eb" stop-opacity="0.1"></stop>
-<stop offset="100%" stop-color="#2452eb" stop-opacity="0"></stop>
-</linearGradient>
-<filter height="120%" id="shadowLine" width="120%" x="-10%" y="-10%">
-<fedropshadow dx="0" dy="4" flood-color="#2452eb" flood-opacity="0.25" stdDeviation="3"></fedropshadow>
-</filter>
-</defs>
-<path d="M0,120 C100,100 150,160 250,140 C350,120 400,60 500,80 C600,100 650,40 800,60 L800,200 L0,200 Z" fill="url(#gradientArea)"></path>
-<path class="dark:stroke-slate-600" d="M0,150 C80,140 160,180 240,160 C320,140 400,100 480,110 C560,120 640,80 800,100" fill="none" stroke="#94a3b8" stroke-dasharray="6 4" stroke-opacity="0.6" stroke-width="2"></path>
-<path d="M0,120 C100,100 150,160 250,140 C350,120 400,60 500,80 C600,100 650,40 800,60" fill="none" filter="url(#shadowLine)" stroke="#2452eb" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
-<g class="chart-point cursor-pointer group">
-<circle class="dark:fill-slate-800" cx="250" cy="140" fill="#ffffff" r="5" stroke="#2452eb" stroke-width="2.5"></circle>
-<g class="opacity-0 group-hover:opacity-100 transition-opacity" transform="translate(250, 110)">
-<rect class="shadow-lg" fill="#1e293b" height="30" rx="6" width="80" x="-40" y="-25"></rect>
-<text fill="white" font-family="Roboto Mono" font-size="11" font-weight="bold" text-anchor="middle" x="0" y="-6">₩3.2M</text>
-</g>
-</g>
-<g class="chart-point cursor-pointer group">
-<circle class="dark:fill-slate-800" cx="500" cy="80" fill="#ffffff" r="5" stroke="#2452eb" stroke-width="2.5"></circle>
-<g class="opacity-0 group-hover:opacity-100 transition-opacity" transform="translate(500, 50)">
-<rect class="shadow-lg" fill="#1e293b" height="30" rx="6" width="80" x="-40" y="-25"></rect>
-<text fill="white" font-family="Roboto Mono" font-size="11" font-weight="bold" text-anchor="middle" x="0" y="-6">₩5.8M</text>
-</g>
-</g>
-</svg>
-</div>
-<div class="flex justify-between text-[11px] font-bold text-slate-400 dark:text-slate-500 px-2 uppercase tracking-wide">
-<span>10월 1일</span>
-<span>10월 8일</span>
-<span>10월 15일</span>
-<span>10월 22일</span>
-<span>10월 29일</span>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
 </div>
 </div>
-<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-card p-6 flex flex-col gap-6">
-<div class="flex flex-col gap-1">
-<h3 class="text-slate-900 dark:text-white text-lg font-bold">플랫폼별 성과 분석</h3>
-<p class="text-slate-500 dark:text-slate-400 text-xs font-medium">지출 점유율(Share) 및 ROAS 효율 비교</p>
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500 border border-emerald-100">
+<span class="material-icons-round">storefront</span>
 </div>
-<div class="flex flex-col gap-5 justify-center flex-1">
-<div class="flex justify-between text-[11px] text-slate-400 font-bold border-b border-slate-100 dark:border-slate-700 pb-2">
-<span>PLATFORM / SHARE</span>
-<span>ROAS</span>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">G마켓/옥션</h4>
+<p class="text-xs text-slate-500">ESM Plus 판매 데이터</p>
 </div>
-<div class="group">
-<div class="flex justify-between items-end mb-1.5">
-<div class="flex items-center gap-2">
-<span class="text-[#03C75A] material-symbols-outlined text-[18px]">search</span>
-<span class="text-sm font-bold text-slate-700 dark:text-slate-200">네이버</span>
 </div>
-<span class="text-sm font-bold text-slate-900 dark:text-white number-font text-green-600">380%</span>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
 </div>
-<div class="relative h-6 w-full bg-slate-50 dark:bg-slate-700/50 rounded-md overflow-hidden flex items-center">
-<div class="absolute left-0 h-full bg-[#03C75A]/20 border-r-2 border-[#03C75A] group-hover:bg-[#03C75A]/30 transition-colors" style="width: 40%"></div>
-<span class="relative z-10 ml-2 text-[10px] font-bold text-[#03C75A] dark:text-[#03C75A]">40% 점유</span>
-<div class="absolute right-2 flex items-center gap-1">
-<span class="text-[10px] text-slate-400">High</span>
-<div class="size-2 rounded-full bg-green-500"></div>
+</div>
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-500 border border-red-100">
+<span class="material-icons-round">inventory_2</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">11번가</h4>
+<p class="text-xs text-slate-500">11번가 판매 데이터 연동</p>
+</div>
+</div>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
+</div>
+</div>
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center text-white font-black text-xl">N</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">네이버 스마트스토어</h4>
+<p class="text-xs text-slate-500">커머스 판매 성과 데이터</p>
+</div>
+</div>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
 </div>
 </div>
 </div>
-<div class="group">
-<div class="flex justify-between items-end mb-1.5">
-<div class="flex items-center gap-2">
-<span class="text-[#E4312A] material-symbols-outlined text-[18px]">shopping_cart</span>
-<span class="text-sm font-bold text-slate-700 dark:text-slate-200">쿠팡</span>
+</section>
+<section>
+<div class="flex items-center gap-2 mb-6">
+<h3 class="text-xl font-extrabold text-slate-900 dark:text-white">분석 플랫폼</h3>
+<span class="text-xs text-slate-400 font-medium">웹/앱 분석 데이터를 수집합니다.</span>
 </div>
-<span class="text-sm font-bold text-slate-900 dark:text-white number-font text-green-600">420%</span>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="group bg-card-light dark:bg-card-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl soft-shadow card-hover cursor-pointer">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500 border border-orange-100">
+<span class="material-icons-round">analytics</span>
 </div>
-<div class="relative h-6 w-full bg-slate-50 dark:bg-slate-700/50 rounded-md overflow-hidden flex items-center">
-<div class="absolute left-0 h-full bg-[#E4312A]/20 border-r-2 border-[#E4312A] group-hover:bg-[#E4312A]/30 transition-colors" style="width: 30%"></div>
-<span class="relative z-10 ml-2 text-[10px] font-bold text-[#E4312A] dark:text-[#ff6b6b]">30% 점유</span>
-<div class="absolute right-2 flex items-center gap-1">
-<span class="text-[10px] text-slate-400">Best</span>
-<div class="size-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-</div>
-</div>
-</div>
-<div class="group">
-<div class="flex justify-between items-end mb-1.5">
-<div class="flex items-center gap-2">
-<span class="text-[#1877F2] material-symbols-outlined text-[18px]">group</span>
-<span class="text-sm font-bold text-slate-700 dark:text-slate-200">메타</span>
-</div>
-<span class="text-sm font-bold text-slate-900 dark:text-white number-font text-orange-500">210%</span>
-</div>
-<div class="relative h-6 w-full bg-slate-50 dark:bg-slate-700/50 rounded-md overflow-hidden flex items-center">
-<div class="absolute left-0 h-full bg-[#1877F2]/20 border-r-2 border-[#1877F2] group-hover:bg-[#1877F2]/30 transition-colors" style="width: 20%"></div>
-<span class="relative z-10 ml-2 text-[10px] font-bold text-[#1877F2] dark:text-[#60a5fa]">20% 점유</span>
-<div class="absolute right-2 flex items-center gap-1">
-<span class="text-[10px] text-slate-400">Avg</span>
-<div class="size-2 rounded-full bg-orange-400"></div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Google Analytics 4</h4>
+<p class="text-xs text-slate-500">웹/앱 행동 데이터 분석</p>
 </div>
 </div>
-</div>
-<div class="group">
-<div class="flex justify-between items-end mb-1.5">
-<div class="flex items-center gap-2">
-<span class="text-[#EA4335] material-symbols-outlined text-[18px]">public</span>
-<span class="text-sm font-bold text-slate-700 dark:text-slate-200">구글</span>
-</div>
-<span class="text-sm font-bold text-slate-900 dark:text-white number-font text-red-500">180%</span>
-</div>
-<div class="relative h-6 w-full bg-slate-50 dark:bg-slate-700/50 rounded-md overflow-hidden flex items-center">
-<div class="absolute left-0 h-full bg-[#EA4335]/20 border-r-2 border-[#EA4335] group-hover:bg-[#EA4335]/30 transition-colors" style="width: 10%"></div>
-<span class="relative z-10 ml-2 text-[10px] font-bold text-[#EA4335] dark:text-[#f87171]">10% 점유</span>
-<div class="absolute right-2 flex items-center gap-1">
-<span class="text-[10px] text-slate-400">Low</span>
-<div class="size-2 rounded-full bg-red-400"></div>
-</div>
-</div>
+<button class="text-xs font-bold text-primary px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20">연동하기</button>
 </div>
 </div>
 </div>
 </section>
 </div>
 </main>
+<footer class="fixed bottom-0 left-64 right-0 h-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex items-center justify-between px-12 z-20">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600 animate-pulse"></span>
+<p class="text-sm font-bold text-slate-500 dark:text-slate-400">아직 연동된 플랫폼이 없습니다</p>
+</div>
+<button class="bg-slate-100 dark:bg-slate-800 text-slate-400 font-extrabold px-8 py-3 rounded-full flex items-center gap-2 cursor-not-allowed group transition-all">
+<span>최소 1개 플랫폼 연동 필요</span>
+<span class="material-icons-round text-sm">chevron_right</span>
+</button>
+</footer>
+</div>
 
 </body></html>

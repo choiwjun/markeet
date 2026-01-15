@@ -30,7 +30,11 @@ const MAIN_CONTAINER_STYLES = [
 const CONTENT_STYLES = [
   'flex-1',
   'overflow-y-auto',
-  'p-4 lg:p-6',
+  'p-4 lg:p-8',
+  // Grid pattern background
+  'bg-[radial-gradient(#e2e8f0_1px,transparent_1px)]',
+  'dark:bg-[radial-gradient(#334155_1px,transparent_1px)]',
+  '[background-size:24px_24px]',
 ].join(' ');
 
 /**

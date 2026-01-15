@@ -246,25 +246,21 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-[1280px] mx-auto flex flex-col gap-6">
-      {/* AI Insight 배너 */}
-      <div className="w-full bg-gradient-to-r from-slate-900 via-[#1e293b] to-slate-900 text-white rounded-xl shadow-lg p-0.5 relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-        <div className="relative bg-[#0f172a] rounded-[10px] px-5 py-3 flex items-start md:items-center gap-4">
-          <div className="bg-indigo-500/20 p-2 rounded-lg shrink-0">
-            <Sparkles className="w-5 h-5 text-indigo-400" />
+      {/* AI Insight 패널 - design.html 스타일 적용 */}
+      <div className="bg-gradient-to-br from-[#eff4ff] to-white dark:from-slate-800 dark:to-slate-900 p-5 rounded-2xl border border-blue-100 dark:border-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] relative">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="bg-white dark:bg-slate-800 p-1.5 rounded-lg shadow-sm border border-blue-50 dark:border-slate-700">
+            <Sparkles className="w-[18px] h-[18px] text-primary" />
           </div>
-          <div className="flex-1">
-            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
-              <span className="text-indigo-300 font-bold text-sm uppercase tracking-wider">AI Insight</span>
-              <div className="h-1 w-1 rounded-full bg-slate-600 hidden md:block"></div>
-              <p className="text-sm md:text-[15px] font-medium leading-snug text-slate-200">
-                <span className="text-white font-bold">데이터를 분석 중입니다.</span> 플랫폼을 연동하면 AI가 인사이트를 제공합니다.
-              </p>
-            </div>
+          <span className="font-bold text-primary dark:text-blue-400 text-sm">AI 인사이트</span>
+        </div>
+        <div className="space-y-3">
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 shadow-sm border border-blue-50/50 dark:border-slate-700 leading-relaxed hover:shadow-md transition-shadow">
+            🚀 플랫폼을 연동하면 AI가 매출 및 광고 성과를 분석하여 인사이트를 제공합니다.
           </div>
-          <button className="text-xs text-indigo-300 hover:text-white font-bold underline decoration-indigo-500/50 underline-offset-4 transition-colors shrink-0">
-            자세히 보기
-          </button>
+          <div className="bg-white dark:bg-slate-800 p-4 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 shadow-sm border border-blue-50/50 dark:border-slate-700 leading-relaxed hover:shadow-md transition-shadow">
+            💡 매일 아침, 전날의 성과 요약과 개선 제안을 받아보세요.
+          </div>
         </div>
       </div>
 

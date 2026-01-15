@@ -120,10 +120,10 @@ describe('DashboardPage', () => {
       expect(screen.getByText('대시보드 개요')).toBeInTheDocument();
     });
 
-    it('AI Insight 배너가 렌더링되어야 함', async () => {
+    it('AI 인사이트 패널이 렌더링되어야 함', async () => {
       renderWithQueryClient(<DashboardPage />);
 
-      expect(screen.getByText('AI Insight')).toBeInTheDocument();
+      expect(screen.getByText('AI 인사이트')).toBeInTheDocument();
     });
 
     it('기간 선택 필터가 렌더링되어야 함', async () => {

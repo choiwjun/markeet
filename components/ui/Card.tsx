@@ -11,16 +11,16 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-// 스타일 상수 - dashboard.html 스타일 반영
+// 스타일 상수 - design.html 스타일 반영
 const VARIANT_STYLES: Record<CardVariant, string> = {
   default: [
     'bg-white dark:bg-slate-800',
-    'border border-slate-200 dark:border-slate-700',
-    'shadow-sm',
+    'border border-slate-100 dark:border-slate-700',
+    'shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)]',
   ].join(' '),
   elevated: [
     'bg-white dark:bg-slate-800',
-    'shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50',
+    'shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.05)]',
     'border border-slate-100 dark:border-slate-700',
   ].join(' '),
   outlined: [

@@ -135,7 +135,7 @@ export const MetricCard = forwardRef<HTMLDivElement, MetricCardProps>(
     return (
       <div
         ref={ref}
-        className={`bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-[0_0_0_1px_rgba(0,0,0,0.03),0_2px_8px_rgba(0,0,0,0.04)] flex flex-col justify-between gap-2 group ${theme.border} transition-colors relative overflow-hidden ${className || ''}`}
+        className={`bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-100 dark:border-slate-700 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] flex flex-col justify-between gap-2 group ${theme.border} hover:-translate-y-1 transition-all duration-300 relative overflow-hidden cursor-default ${className || ''}`}
         {...props}
       >
         {/* 배경 아이콘 */}
